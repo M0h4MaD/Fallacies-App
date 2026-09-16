@@ -26,8 +26,8 @@ export interface Fallacy {
   definitionEn: string
   historicalBackgroundAr?: string
   historicalBackgroundEn?: string
-  relatedFallacyIds: string[]
-  examples: FallacyExample[]
+  relatedFallacyIds?: string[]
+  examples?: FallacyExample[]
 }
 
 export interface AppUser {
