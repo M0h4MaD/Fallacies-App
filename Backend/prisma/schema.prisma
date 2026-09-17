@@ -1,0 +1,146 @@
+// backend/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  user
+  admin
+}
+
+enum FallacyCategory {
+  formal
+  informal
+}
+
+enum FallacySubCategory {
+  relevance
+  ambiguity
+  presumption
+  weak_induction @map("weak-induction")
+}
+
+enum Difficulty {
+  beginner
+  intermediate
+  advanced
+}
+
+enum ExampleContext {
+  political
+  religious
+  media
+  everyday
+}
+
+enum QuizMode {
+  scenario
+  correction
+}
+
+model User {
+  id             String   @id @default(cuid())
+  firebaseUid    String?  @unique
+  guestId        String?  @unique
+  isGuest        Boolean  @default(true)
+  displayName    String
+  email          String?
+  role           Role     @default(user)
+  xp             Int      @default(0)
+  level          Int      @default(1)
+  streakCurrent  Int      @default(0)
+  streakLongest  Int      @default(0)
+  lastActiveDate String?
+  badgeIds       String[] @default([])
+  isSuspended    Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  unlockedFallacies Fallacy[]  @relation("UnlockedFallacies")
+  quizzes           Quiz[]
+  progress          Progress[]
+
+  @@index([xp(sort: Desc)])
+  @@index([streakCurrent(sort: Desc)])
+}
+
+model Fallacy {
+  id                     String             @id @default(cuid())
+  slug                   String             @unique
+  nameAr                 String
+  nameEn                 String
+  category               FallacyCategory
+  subCategory            FallacySubCategory
+  difficulty             Difficulty
+  definitionAr           String
+  definitionEn           String
+  historicalBackgroundAr String?
+  historicalBackgroundEn String?
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+
+  examples        FallacyExample[]
+  unlockedByUsers User[]           @relation("UnlockedFallacies")
+  quizAnswers     QuizAnswer[]
+  progress        Progress[]
+}
+
+model FallacyExample {
+  id                   String         @id @default(cuid())
+  fallacyId            String
+  fallacy              Fallacy        @relation(fields: [fallacyId], references: [id], onDelete: Cascade)
+  context              ExampleContext
+  textAr               String
+  textEn               String
+  isFictionalComposite Boolean
+  sourceCitation       String?
+}
+
+model Quiz {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  mode         QuizMode
+  scorePercent Int
+  xpAwarded    Int
+  timeSpentSec Int
+  createdAt    DateTime @default(now())
+
+  answers QuizAnswer[]
+
+  @@index([userId, createdAt(sort: Desc)])
+}
+
+model QuizAnswer {
+  id             String     @id @default(cuid())
+  quizId         String
+  quiz           Quiz       @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  fallacyId      String
+  fallacy        Fallacy    @relation(fields: [fallacyId], references: [id])
+  difficultyTier Difficulty
+  wasCorrect     Boolean
+  hintUsed       Boolean    @default(false)
+}
+
+model Progress {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id])
+  fallacyId      String
+  fallacy        Fallacy   @relation(fields: [fallacyId], references: [id])
+  timesCorrect   Int       @default(0)
+  timesIncorrect Int       @default(0)
+  lastReviewedAt DateTime?
+  nextReviewDue  DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([userId, fallacyId])
+  @@index([userId, nextReviewDue])
+}

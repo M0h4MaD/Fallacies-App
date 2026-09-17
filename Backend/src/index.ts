@@ -1,17 +1,19 @@
+// backend/src/index.ts (استبدله كامل)
+import "dotenv/config";
+import { createApp } from "./app.js";
+import { connectDB } from "./config/prisma.js";
+import { initFirebaseAdmin } from "./config/firebaseAdmin.js";
 
-import 'dotenv/config'
-import { createApp } from './app.js'
-import { connectDB } from './config/db.js'
-
-const PORT = process.env.PORT ?? 5000
+const PORT = process.env.PORT ?? 5000;
 
 async function main() {
-  await connectDB()
-  const app = createApp()
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+  initFirebaseAdmin();
+  await connectDB();
+  const app = createApp();
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 
 main().catch((err) => {
-  console.error('Failed to start server:', err)
-  process.exit(1)
-})
+  console.error("Failed to start server:", err);
+  process.exit(1);
+});
