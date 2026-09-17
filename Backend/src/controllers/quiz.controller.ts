@@ -7,6 +7,7 @@ import { xpForAnswer, levelForXp } from "../services/xp.js";
 import { nextStreak } from "../services/streak.js";
 import { evaluateBadges } from "../services/badges.js";
 import { AppError } from "../middleware/errorHandler.js";
+import type { IdentifiedRequest } from "../middleware/identify.js";
 
 interface SubmittedAnswer {
   fallacyId: string;
@@ -15,15 +16,13 @@ interface SubmittedAnswer {
   hintUsed: boolean;
 }
 
-export async function submitQuiz(req: AuthedRequest, res: Response) {
+export async function submitQuiz(req: IdentifiedRequest, res: Response) {
   const { mode, timeSpentSec, answers } = req.body as {
     mode: QuizMode;
     timeSpentSec: number;
     answers: SubmittedAnswer[];
   };
-  const user = await prisma.user.findUnique({
-    where: { firebaseUid: req.firebaseUser!.uid },
-  });
+  const user = req.currentUser!;
   if (!user) throw new AppError("User not found", 404);
 
   // Server computes the score itself from the raw per-question answers — never trusts a client-sent total.

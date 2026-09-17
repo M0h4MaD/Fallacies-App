@@ -1,8 +1,8 @@
 // backend/src/middleware/auth.ts (ملف جديد)
 import type { NextFunction, Request, Response } from 'express'
 import { getAuth } from 'firebase-admin/auth'
-import User from '../models/User.js'
 import { AppError } from './errorHandler.js'
+import { prisma } from '../config/prisma.js'
 
 export interface AuthedRequest extends Request {
   firebaseUser?: { uid: string; email?: string; name?: string }
@@ -19,9 +19,8 @@ export async function verifyFirebaseToken(req: AuthedRequest, _res: Response, ne
     next(new AppError('Invalid or expired token', 401))
   }
 }
-
 export async function requireAdmin(req: AuthedRequest, _res: Response, next: NextFunction) {
-  const user = await User.findOne({ firebaseUid: req.firebaseUser?.uid })
+  const user = await prisma.user.findUnique({ where: { firebaseUid: req.firebaseUser?.uid } })
   if (user?.role !== 'admin') return next(new AppError('Admin access required', 403))
   next()
 }

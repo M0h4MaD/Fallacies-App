@@ -8,6 +8,10 @@ import authRoutes from "./routes/auth.routes.js";
 import fallaciesRoutes from "./routes/fallacies.routes.js";
 import quizRoutes from "./routes/quiz.routes.js";
 import leaderboardRoutes from "./routes/leaderboard.routes.js";
+import questionsRoutes from "./routes/questions.routes.js";
+import explainerRoutes from "./routes/explainer.routes.js";
+import debaterRoutes from "./routes/debater.routes.js";
+import evaluatorRoutes from "./routes/evaluator.routes.js";
 
 export function createApp() {
   const app = express();
@@ -28,7 +32,11 @@ export function createApp() {
   app.use("/api/fallacies", fallaciesRoutes);
   app.use("/api/quiz", quizRoutes);
   app.use("/api/leaderboard", leaderboardRoutes);
-  
+  app.use("/api/questions", questionsRoutes);
+  app.use("/api/explainer", explainerRoutes);
+  app.use("/api/debater", debaterRoutes);
+  app.use("/api/evaluator", evaluatorRoutes);
+
   app.use(errorHandler);
   return app;
 }

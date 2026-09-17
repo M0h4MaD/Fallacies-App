@@ -89,6 +89,8 @@ model Fallacy {
   unlockedByUsers User[]           @relation("UnlockedFallacies")
   quizAnswers     QuizAnswer[]
   progress        Progress[]
+
+  generatedQuestions GeneratedQuestion[]
 }
 
 model FallacyExample {
@@ -143,4 +145,38 @@ model Progress {
 
   @@unique([userId, fallacyId])
   @@index([userId, nextReviewDue])
+}
+
+model GeneratedQuestion {
+  id             String         @id @default(cuid())
+  fallacyId      String
+  fallacy        Fallacy        @relation(fields: [fallacyId], references: [id], onDelete: Cascade)
+  difficultyTier Difficulty
+  contextType    ExampleContext
+  textAr         String
+  textEn         String
+  createdAt      DateTime       @default(now())
+
+  shownTo ShownQuestion[]
+
+  @@index([fallacyId, difficultyTier])
+}
+
+model ShownQuestion {
+  id         String            @id @default(cuid())
+  userId     String
+  questionId String
+  question   GeneratedQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  shownAt    DateTime          @default(now())
+
+  @@index([userId, questionId])
+}
+
+model DailyQuota {
+  id        String @id @default(cuid())
+  userId    String
+  date      String // 'YYYY-MM-DD'
+  callCount Int    @default(0)
+
+  @@unique([userId, date])
 }

@@ -6,9 +6,11 @@ import { validateBody } from '../middleware/validate.js'
 import { verifyFirebaseToken } from '../middleware/auth.js'
 import { submitQuizSchema } from '../validation/quiz.schema.js'
 import { submitQuiz } from '../controllers/quiz.controller.js'
+import { identifyUser } from '../middleware/identify.js'
 
 const router = Router()
 router.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 60, standardHeaders: true, legacyHeaders: false }))
-router.post('/submit', verifyFirebaseToken, validateBody(submitQuizSchema), asyncHandler(submitQuiz))
+router.post('/submit', identifyUser, validateBody(submitQuizSchema), asyncHandler(submitQuiz))
+
 
 export default router

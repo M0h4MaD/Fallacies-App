@@ -2,6 +2,8 @@
 import type { Request, Response } from "express";
 import { prisma } from "../config/prisma.js";
 import { AppError } from "../middleware/errorHandler.js";
+import type { AuthedRequest } from "../middleware/auth.js";
+import { unlockedFallacyCount } from "../services/unlock.js";
 
 export async function listFallacies(_req: Request, res: Response) {
   res.json(
@@ -40,4 +42,17 @@ export async function deleteFallacy(req: Request, res: Response) {
   } catch {
     throw new AppError("Fallacy not found", 404);
   }
+}
+
+export async function listUnlockedFallacies(req: AuthedRequest, res: Response) {
+  const user = await prisma.user.findUnique({
+    where: { firebaseUid: req.firebaseUser!.uid },
+  });
+  if (!user) throw new AppError("User not found", 404);
+
+  const all = await prisma.fallacy.findMany({
+    orderBy: [{ difficulty: "asc" }, { nameEn: "asc" }],
+  });
+  const count = unlockedFallacyCount(user.level, all.length);
+  res.json(all.slice(0, count));
 }
