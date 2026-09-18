@@ -1,13 +1,11 @@
-// backend/src/controllers/quiz.controller.ts (ملف جديد)
+// backend/src/controllers/quiz.controller.ts (استبدله كامل)
 import type { Response } from "express";
 import type { Difficulty, QuizMode } from "@prisma/client";
 import { prisma } from "../config/prisma.js";
-import type { AuthedRequest } from "../middleware/auth.js";
+import type { IdentifiedRequest } from "../middleware/identify.js";
 import { xpForAnswer, levelForXp } from "../services/xp.js";
 import { nextStreak } from "../services/streak.js";
 import { evaluateBadges } from "../services/badges.js";
-import { AppError } from "../middleware/errorHandler.js";
-import type { IdentifiedRequest } from "../middleware/identify.js";
 
 interface SubmittedAnswer {
   fallacyId: string;
@@ -15,6 +13,7 @@ interface SubmittedAnswer {
   wasCorrect: boolean;
   hintUsed: boolean;
 }
+const REVIEW_INTERVALS_DAYS = [1, 3, 7]; // spec 4-C: missed fallacies resurface after 1/3/7 days
 
 export async function submitQuiz(req: IdentifiedRequest, res: Response) {
   const { mode, timeSpentSec, answers } = req.body as {
@@ -23,9 +22,7 @@ export async function submitQuiz(req: IdentifiedRequest, res: Response) {
     answers: SubmittedAnswer[];
   };
   const user = req.currentUser!;
-  if (!user) throw new AppError("User not found", 404);
 
-  // Server computes the score itself from the raw per-question answers — never trusts a client-sent total.
   const correctCount = answers.filter((a) => a.wasCorrect).length;
   const scorePercent = Math.round((correctCount / answers.length) * 100);
   const xpAwarded = answers.reduce(
@@ -53,6 +50,49 @@ export async function submitQuiz(req: IdentifiedRequest, res: Response) {
     },
     user.badgeIds,
   );
+
+  const existingProgress = await prisma.progress.findMany({
+    where: {
+      userId: user.id,
+      fallacyId: { in: answers.map((a) => a.fallacyId) },
+    },
+  });
+  const progressByFallacy = new Map(
+    existingProgress.map((p) => [p.fallacyId, p]),
+  );
+
+  const progressUpserts = answers.map((a) => {
+    const existing = progressByFallacy.get(a.fallacyId);
+    const intervalIndex = a.wasCorrect
+      ? Math.min(
+          (existing?.reviewIntervalIndex ?? -1) + 1,
+          REVIEW_INTERVALS_DAYS.length - 1,
+        )
+      : 0;
+    const nextReviewDue = new Date();
+    nextReviewDue.setDate(
+      nextReviewDue.getDate() + REVIEW_INTERVALS_DAYS[intervalIndex],
+    );
+    return prisma.progress.upsert({
+      where: { userId_fallacyId: { userId: user.id, fallacyId: a.fallacyId } },
+      update: {
+        timesCorrect: { increment: a.wasCorrect ? 1 : 0 },
+        timesIncorrect: { increment: a.wasCorrect ? 0 : 1 },
+        lastReviewedAt: new Date(),
+        nextReviewDue,
+        reviewIntervalIndex: intervalIndex,
+      },
+      create: {
+        userId: user.id,
+        fallacyId: a.fallacyId,
+        timesCorrect: a.wasCorrect ? 1 : 0,
+        timesIncorrect: a.wasCorrect ? 0 : 1,
+        lastReviewedAt: new Date(),
+        nextReviewDue,
+        reviewIntervalIndex: intervalIndex,
+      },
+    });
+  });
 
   const [quiz] = await prisma.$transaction([
     prisma.quiz.create({
@@ -83,6 +123,7 @@ export async function submitQuiz(req: IdentifiedRequest, res: Response) {
         badgeIds,
       },
     }),
+    ...progressUpserts,
   ]);
 
   res

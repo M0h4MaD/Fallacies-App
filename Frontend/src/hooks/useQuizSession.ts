@@ -1,53 +1,103 @@
-// frontend/src/hooks/useQuizSession.ts (ملف جديد)
-// Owns all quiz-session state so QuizPage stays pure UI. Swapping mock questions for
-// live Gemini ones (Phase 5), or persisting results server-side (Phase 4), touches only this file.
-import { useMemo, useState } from 'react'
-import { mockQuizQuestions } from '../data/quiz.mock'
+// frontend/src/hooks/useQuizSession.ts (استبدله كامل)
+import { useEffect, useState } from "react";
+import { apiClient } from "../lib/apiClient";
+import { useAuthStore, applyQuizResult } from "../store/authStore";
 
-interface AnsweredQuestion {
-  fallacySlug: string
-  wasCorrect: boolean
+interface LiveQuestion {
+  text: { ar: string; en: string };
+  embeddedFallacyId: string;
+  difficultyTier: "beginner" | "intermediate" | "advanced";
+  contextType: string;
 }
+interface SubmitResult {
+  scorePercent: number;
+  xpAwarded: number;
+  newLevel: number;
+  streakCurrent: number;
+  badgeIds: string[];
+}
+const QUESTIONS_PER_SESSION = 5;
 
-export function useQuizSession() {
-  const [index, setIndex] = useState(0)
-  const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
-  const [answers, setAnswers] = useState<AnsweredQuestion[]>([])
+export function useQuizSession(fallacySlug: string) {
+  const level = useAuthStore((s) => s.appUser?.level ?? 1);
+  const [round, setRound] = useState(0);
+  const [question, setQuestion] = useState<LiveQuestion | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [answers, setAnswers] = useState<
+    {
+      fallacyId: string;
+      difficultyTier: LiveQuestion["difficultyTier"];
+      wasCorrect: boolean;
+    }[]
+  >([]);
+  const [revealed, setRevealed] = useState(false);
+  const [wasCorrectLast, setWasCorrectLast] = useState(false);
+  const [result, setResult] = useState<SubmitResult | null>(null);
+  const [startTime] = useState(() => Date.now());
 
-  const question = mockQuizQuestions[index]
-  const isFinished = index >= mockQuizQuestions.length
-  const isLastQuestion = index === mockQuizQuestions.length - 1
+  const isFinished = round >= QUESTIONS_PER_SESSION;
+  const difficulty =
+    level >= 8 ? "advanced" : level >= 4 ? "intermediate" : "beginner";
 
-  const options = useMemo(() => {
-    if (!question) return []
-    return [question.correctSlug, ...question.distractorSlugs].sort(() => Math.random() - 0.5)
-  }, [question])
+  useEffect(() => {
+    if (isFinished) return;
+    setIsLoading(true);
+    setError(null);
+    apiClient
+      .get<LiveQuestion>(`/api/questions/${fallacySlug}/next`, {
+        params: { difficulty },
+      })
+      .then((res) => setQuestion(res.data))
+      .catch((err) => setError(err.message))
+      .finally(() => setIsLoading(false));
+  }, [round, isFinished, fallacySlug, difficulty]);
 
-  function selectAnswer(slug: string) {
-    if (selectedSlug || !question) return
-    setSelectedSlug(slug)
-    setAnswers((prev) => [...prev, { fallacySlug: question.correctSlug, wasCorrect: slug === question.correctSlug }])
+  useEffect(() => {
+    if (!isFinished || result) return;
+    apiClient
+      .post<SubmitResult>("/api/quiz/submit", {
+        mode: "scenario",
+        timeSpentSec: Math.round((Date.now() - startTime) / 1000),
+        answers: answers.map((a) => ({ ...a, hintUsed: false })),
+      })
+      .then((res) => {
+        setResult(res.data);
+        applyQuizResult(res.data);
+      })
+      .catch((err) => setError(err.message));
+  }, [isFinished, result, answers, startTime]);
+
+  function answer(saidSpotted: boolean) {
+    if (revealed || !question) return;
+    setWasCorrectLast(saidSpotted);
+    setRevealed(true);
+    setAnswers((prev) => [
+      ...prev,
+      {
+        fallacyId: question.embeddedFallacyId,
+        difficultyTier: question.difficultyTier,
+        wasCorrect: saidSpotted,
+      },
+    ]);
   }
 
   function next() {
-    setSelectedSlug(null)
-    setIndex((i) => i + 1)
+    setRevealed(false);
+    setRound((r) => r + 1);
   }
-
-  const report = useMemo(() => {
-    if (!isFinished) return null
-    const correct = answers.filter((a) => a.wasCorrect).length
-    const perFallacyBreakdown: Record<string, { correct: number; total: number }> = {}
-    for (const a of answers) {
-      perFallacyBreakdown[a.fallacySlug] ??= { correct: 0, total: 0 }
-      perFallacyBreakdown[a.fallacySlug].total += 1
-      if (a.wasCorrect) perFallacyBreakdown[a.fallacySlug].correct += 1
-    }
-    return { scorePercent: Math.round((correct / answers.length) * 100), perFallacyBreakdown }
-  }, [isFinished, answers])
 
   return {
-    question, options, selectedSlug, selectAnswer, next, isLastQuestion, isFinished, report,
-    totalQuestions: mockQuizQuestions.length, currentNumber: index + 1,
-  }
+    question,
+    isLoading,
+    error,
+    revealed,
+    wasCorrectLast,
+    answer,
+    next,
+    isFinished,
+    result,
+    answeredCount: round,
+    totalQuestions: QUESTIONS_PER_SESSION,
+  };
 }

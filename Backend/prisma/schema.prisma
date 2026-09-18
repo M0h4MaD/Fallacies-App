@@ -145,6 +145,8 @@ model Progress {
 
   @@unique([userId, fallacyId])
   @@index([userId, nextReviewDue])
+
+   reviewIntervalIndex Int @default(0) // index into the 1/3/7-day interval ladder
 }
 
 model GeneratedQuestion {
@@ -152,6 +154,7 @@ model GeneratedQuestion {
   fallacyId      String
   fallacy        Fallacy        @relation(fields: [fallacyId], references: [id], onDelete: Cascade)
   difficultyTier Difficulty
+  mode           QuizMode
   contextType    ExampleContext
   textAr         String
   textEn         String
@@ -159,7 +162,7 @@ model GeneratedQuestion {
 
   shownTo ShownQuestion[]
 
-  @@index([fallacyId, difficultyTier])
+  @@index([fallacyId, difficultyTier, mode])
 }
 
 model ShownQuestion {

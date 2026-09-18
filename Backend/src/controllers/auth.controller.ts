@@ -3,6 +3,7 @@ import type { Response } from "express";
 import { prisma } from "../config/prisma.js";
 import type { AuthedRequest } from "../middleware/auth.js";
 import { AppError } from "../middleware/errorHandler.js";
+import type { IdentifiedRequest } from '../middleware/identify.js'
 
 export async function continueAsGuest(req: AuthedRequest, res: Response) {
   const { guestId, displayName } = req.body as {
@@ -61,10 +62,6 @@ export async function registerOrMerge(req: AuthedRequest, res: Response) {
   res.json(user);
 }
 
-export async function getMe(req: AuthedRequest, res: Response) {
-  const user = await prisma.user.findUnique({
-    where: { firebaseUid: req.firebaseUser!.uid },
-  });
-  if (!user) throw new AppError("User not found", 404);
-  res.json(user);
+export async function getMe(req: IdentifiedRequest, res: Response) {
+  res.json(req.currentUser)
 }

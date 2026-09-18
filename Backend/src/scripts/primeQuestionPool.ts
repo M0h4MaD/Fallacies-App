@@ -1,9 +1,10 @@
-// backend/src/scripts/primeQuestionPool.ts (ملف جديد) — npx tsx src/scripts/primeQuestionPool.ts
+// backend/src/scripts/primeQuestionPool.ts (استبدله كامل)
 import "dotenv/config";
 import { prisma } from "../config/prisma.js";
 import { generateQuestionBatch } from "../services/questionGenerator.js";
 
 const DIFFICULTIES = ["beginner", "intermediate", "advanced"] as const;
+const MODES = ["scenario", "correction"] as const;
 
 async function prime() {
   const fallacies = await prisma.fallacy.findMany({
@@ -11,8 +12,12 @@ async function prime() {
   });
   for (const fallacy of fallacies) {
     for (const difficulty of DIFFICULTIES) {
-      console.log(`Generating for ${fallacy.nameEn} / ${difficulty}...`);
-      await generateQuestionBatch(fallacy.id, difficulty, 3);
+      for (const mode of MODES) {
+        console.log(
+          `Generating for ${fallacy.nameEn} / ${difficulty} / ${mode}...`,
+        );
+        await generateQuestionBatch(fallacy.id, difficulty, mode, 3);
+      }
     }
   }
   console.log("Pool primed.");

@@ -59,6 +59,7 @@ function buildPrompt(
 export async function generateQuestionBatch(
   fallacyId: string,
   difficultyTier: Difficulty,
+  mode: QuizMode,
   count = 3,
 ) {
   const fallacy = await prisma.fallacy.findUniqueOrThrow({
@@ -66,20 +67,17 @@ export async function generateQuestionBatch(
   });
   const created = [];
   for (let i = 0; i < count; i++) {
-    const mode: QuizMode = Math.random() < 0.5 ? "scenario" : "correction";
     const prompt = buildPrompt(
       fallacy.nameEn,
       fallacy.definitionEn,
       difficultyTier,
       mode,
     );
-    // Background refills aren't tied to one end-user — billed against a shared system quota
-    // bucket so total generation cost stays bounded regardless of traffic pattern.
     const raw = await callGemini({ userId: null, prompt, responseSchema });
     const parsed = geminiOutputSchema.parse(JSON.parse(raw));
     created.push(
       await prisma.generatedQuestion.create({
-        data: { fallacyId, difficultyTier, ...parsed },
+        data: { fallacyId, difficultyTier, mode, ...parsed },
       }),
     );
   }

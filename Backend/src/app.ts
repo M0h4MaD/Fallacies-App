@@ -12,6 +12,7 @@ import questionsRoutes from "./routes/questions.routes.js";
 import explainerRoutes from "./routes/explainer.routes.js";
 import debaterRoutes from "./routes/debater.routes.js";
 import evaluatorRoutes from "./routes/evaluator.routes.js";
+import progressRoutes from "./routes/progress.routes.js";
 
 export function createApp() {
   const app = express();
@@ -36,6 +37,7 @@ export function createApp() {
   app.use("/api/explainer", explainerRoutes);
   app.use("/api/debater", debaterRoutes);
   app.use("/api/evaluator", evaluatorRoutes);
+  app.use("/api/progress", progressRoutes);
 
   app.use(errorHandler);
   return app;
