@@ -4,6 +4,7 @@
 import { ai, GEMINI_MODEL, GEMINI_SAFETY_SETTINGS } from "../config/gemini.js";
 import { checkAndIncrementQuota } from "./geminiQuota.js";
 import { AppError } from "../middleware/errorHandler.js";
+import { containsFlaggedContent } from "./profanityCheck.js";
 
 interface CallGeminiOptions {
   userId: string;
@@ -34,6 +35,11 @@ export async function callGemini({
       });
       if (!response.text)
         throw new AppError("Gemini returned an empty response", 502);
+      if (containsFlaggedContent(response.text))
+        throw new AppError(
+          "Generated content failed a safety check — try again.",
+          502,
+        );
       return response.text;
     } catch (err) {
       const isRateLimit =

@@ -7,13 +7,15 @@ import { verifyFirebaseToken } from '../middleware/auth.js'
 import { guestSchema, registerSchema } from '../validation/auth.schema.js'
 import { continueAsGuest, registerOrMerge, getMe } from '../controllers/auth.controller.js'
 import { verifyFirebaseToken, identifyUser } from '../middleware/auth.js' 
+import { verifySupabaseAuth } from '../middleware/auth.js'
+import { identifyUser } from '../middleware/identify.js'
 
 const router = Router()
 router.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, standardHeaders: true, legacyHeaders: false })) // spec 5: stricter limit on auth
 
 router.post('/guest', validateBody(guestSchema), asyncHandler(continueAsGuest))
 router.post('/register', verifyFirebaseToken, validateBody(registerSchema), asyncHandler(registerOrMerge))
-router.get('/me', verifyFirebaseToken, asyncHandler(getMe))
+router.post('/register', verifySupabaseAuth, validateBody(registerSchema), asyncHandler(registerOrMerge))
 router.get('/me', identifyUser, asyncHandler(getMe))
 
 export default router

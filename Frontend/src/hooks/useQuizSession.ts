@@ -15,7 +15,9 @@ interface SubmitResult {
   newLevel: number;
   streakCurrent: number;
   badgeIds: string[];
+  perFallacyBreakdown: Record<string, { correct: number; total: number }>;
 }
+
 const QUESTIONS_PER_SESSION = 5;
 
 export function useQuizSession(fallacySlug: string) {
@@ -24,6 +26,7 @@ export function useQuizSession(fallacySlug: string) {
   const [question, setQuestion] = useState<LiveQuestion | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hintUsedThisQuestion, setHintUsedThisQuestion] = useState(false);
   const [answers, setAnswers] = useState<
     {
       fallacyId: string;
@@ -59,7 +62,7 @@ export function useQuizSession(fallacySlug: string) {
       .post<SubmitResult>("/api/quiz/submit", {
         mode: "scenario",
         timeSpentSec: Math.round((Date.now() - startTime) / 1000),
-        answers: answers.map((a) => ({ ...a, hintUsed: false })),
+        answers: answers.map((a) => a),
       })
       .then((res) => {
         setResult(res.data);
@@ -78,14 +81,18 @@ export function useQuizSession(fallacySlug: string) {
         fallacyId: question.embeddedFallacyId,
         difficultyTier: question.difficultyTier,
         wasCorrect: saidSpotted,
+        hintUsed: hintUsedThisQuestion,
       },
     ]);
+    setHintUsedThisQuestion(false);
   }
 
   function next() {
     setRevealed(false);
     setRound((r) => r + 1);
   }
+
+function markHintUsed() { setHintUsedThisQuestion(true) }
 
   return {
     question,
@@ -99,5 +106,6 @@ export function useQuizSession(fallacySlug: string) {
     result,
     answeredCount: round,
     totalQuestions: QUESTIONS_PER_SESSION,
+    markHintUsed
   };
 }

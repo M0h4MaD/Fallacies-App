@@ -37,6 +37,11 @@ export default function Header() {
           >
             {i18n.language === "ar" ? "الصدارة" : "Leaderboard"}
           </Link>
+          {useAuthStore((s) => s.appUser?.role) === "admin" && (
+            <Link to="/admin" className="text-sm text-text hover:text-brand">
+              {i18n.language === "ar" ? "الإدارة" : "Admin"}
+            </Link>
+          )}
         </nav>
         <div className="flex items-center gap-2">
           <button

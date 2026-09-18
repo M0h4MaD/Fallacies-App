@@ -80,6 +80,7 @@ export async function generateQuestionBatch(
         data: { fallacyId, difficultyTier, mode, ...parsed },
       }),
     );
+    if (i < count - 1) await new Promise((r) => setTimeout(r, 6500)) // نضل تحت سقف 10 طلبات/دقيقة
   }
   return created;
 }

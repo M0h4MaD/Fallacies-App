@@ -38,6 +38,7 @@ export interface AppUser {
   level: number
   streak: number
   badgeIds: string[]
+  role: 'user' | 'admin'
 }
 
 export type QuizMode = 'scenario' | 'correction'

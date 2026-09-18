@@ -1,18 +1,13 @@
-// frontend/src/store/authStore.ts (ملف جديد)
+// frontend/src/store/authStore.ts (استبدله كامل)
 import { create } from "zustand";
-import {
-  onAuthStateChanged,
-  signInWithPopup,
-  signOut as firebaseSignOut,
-  type User as FirebaseUser,
-} from "firebase/auth";
-import { auth, googleProvider } from "../config/firebase";
+import type { Session } from "@supabase/supabase-js";
+import { supabase } from "../config/supabase";
 import { apiClient } from "../lib/apiClient";
 import { getOrCreateGuestId } from "../lib/guestId";
 import type { AppUser } from "../types";
 
 interface AuthState {
-  firebaseUser: FirebaseUser | null;
+  session: Session | null;
   appUser: AppUser | null;
   isLoading: boolean;
   signInWithGoogle: () => Promise<void>;
@@ -20,15 +15,18 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  firebaseUser: null,
+  session: null,
   appUser: null,
   isLoading: true,
   signInWithGoogle: async () => {
-    await signInWithPopup(auth, googleProvider);
-  }, // onAuthStateChanged below picks up the result
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.origin },
+    });
+  },
   signOut: async () => {
-    await firebaseSignOut(auth);
-    set({ firebaseUser: null, appUser: null });
+    await supabase.auth.signOut();
+    set({ session: null, appUser: null });
   },
 }));
 
@@ -40,7 +38,9 @@ interface ApiUserResponse {
   level: number;
   streakCurrent: number;
   badgeIds: string[];
+  role: "user" | "admin";
 }
+
 function mapUser(d: ApiUserResponse): AppUser {
   return {
     id: d.id,
@@ -50,14 +50,15 @@ function mapUser(d: ApiUserResponse): AppUser {
     level: d.level,
     streak: d.streakCurrent,
     badgeIds: d.badgeIds,
+    role: d.role,
   };
 }
 
 export function initAuthListener() {
-  onAuthStateChanged(auth, async (firebaseUser) => {
-    if (!firebaseUser)
+  supabase.auth.onAuthStateChange(async (_event, session) => {
+    if (!session)
       return useAuthStore.setState({
-        firebaseUser: null,
+        session: null,
         appUser: null,
         isLoading: false,
       });
@@ -67,25 +68,24 @@ export function initAuthListener() {
         { guestId: getOrCreateGuestId() },
       );
       useAuthStore.setState({
-        firebaseUser,
+        session,
         appUser: mapUser(data),
         isLoading: false,
       });
     } catch {
-      useAuthStore.setState({ firebaseUser, appUser: null, isLoading: false });
+      useAuthStore.setState({ session, appUser: null, isLoading: false });
     }
   });
 }
+
 export async function hydrateGuestUser() {
   try {
     const { data } = await apiClient.get<ApiUserResponse>("/api/auth/me");
     useAuthStore.setState((s) =>
-      s.firebaseUser ? s : { ...s, appUser: mapUser(data), isLoading: false },
+      s.session ? s : { ...s, appUser: mapUser(data), isLoading: false },
     );
   } catch {
-    useAuthStore.setState((s) =>
-      s.firebaseUser ? s : { ...s, isLoading: false },
-    );
+    useAuthStore.setState((s) => (s.session ? s : { ...s, isLoading: false }));
   }
 }
 

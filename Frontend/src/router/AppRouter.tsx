@@ -12,6 +12,7 @@ import ProfilePage from '../pages/ProfilePage'
 import OnboardingPage from '../pages/OnboardingPage'
 import PrivacyPage from '../pages/PrivacyPage'
 import CorrectionPage from '../pages/CorrectionPage'
+import AdminPage from '../pages/AdminPage'
 
 export default function AppRouter() {
   return (
@@ -29,6 +30,7 @@ export default function AppRouter() {
           <Route path="/onboarding" element={<OnboardingPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/correct" element={<CorrectionPage />} />
+          <Route path="/admin" element={<AdminPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

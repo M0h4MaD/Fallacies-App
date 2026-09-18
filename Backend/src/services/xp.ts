@@ -6,9 +6,10 @@ import type { Difficulty, QuizMode } from '@prisma/client'
 const XP_PER_DIFFICULTY: Record<Difficulty, number> = { beginner: 10, intermediate: 15, advanced: 25 }
 const MODE_MULTIPLIER: Record<QuizMode, number> = { scenario: 1, correction: 1.5 }
 
-export function xpForAnswer(difficulty: Difficulty, mode: QuizMode, wasCorrect: boolean): number {
+export function xpForAnswer(difficulty: Difficulty, mode: QuizMode, wasCorrect: boolean, hintUsed: boolean): number {
   if (!wasCorrect) return 0
-  return Math.round(XP_PER_DIFFICULTY[difficulty] * MODE_MULTIPLIER[mode])
+  const base = Math.round(XP_PER_DIFFICULTY[difficulty] * MODE_MULTIPLIER[mode])
+  return hintUsed ? Math.round(base * 0.5) : base // hint = نصف الخبرة (spec 4-C: "small XP cost per use")
 }
 
 export function levelForXp(totalXp: number): number {

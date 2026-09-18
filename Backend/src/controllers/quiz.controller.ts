@@ -26,7 +26,8 @@ export async function submitQuiz(req: IdentifiedRequest, res: Response) {
   const correctCount = answers.filter((a) => a.wasCorrect).length;
   const scorePercent = Math.round((correctCount / answers.length) * 100);
   const xpAwarded = answers.reduce(
-    (sum, a) => sum + xpForAnswer(a.difficultyTier, mode, a.wasCorrect),
+    (sum, a) =>
+      sum + xpForAnswer(a.difficultyTier, mode, a.wasCorrect, a.hintUsed),
     0,
   );
 
@@ -126,7 +127,24 @@ export async function submitQuiz(req: IdentifiedRequest, res: Response) {
     ...progressUpserts,
   ]);
 
-  res
-    .status(201)
-    .json({ quiz, scorePercent, xpAwarded, newLevel, streakCurrent, badgeIds });
+  res.status(201).json({
+    quiz,
+    scorePercent,
+    xpAwarded,
+    newLevel,
+    streakCurrent,
+    badgeIds,
+    perFallacyBreakdown: Object.fromEntries(
+      [...new Set(answers.map((a) => a.fallacyId))].map((fid) => {
+        const fAnswers = answers.filter((a) => a.fallacyId === fid);
+        return [
+          fid,
+          {
+            correct: fAnswers.filter((a) => a.wasCorrect).length,
+            total: fAnswers.length,
+          },
+        ];
+      }),
+    ),
+  });
 }

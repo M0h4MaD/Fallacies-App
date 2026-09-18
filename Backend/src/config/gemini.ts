@@ -2,7 +2,7 @@
 import { GoogleGenAI } from '@google/genai'
 
 export const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
-export const GEMINI_MODEL = 'gemini-2.5-flash'
+export const GEMINI_MODEL = 'gemini-flash-lite-latest'
 
 // Deliberate, documented choice (spec 4-D): the app analyzes political/religious rhetoric as
 // EXAMPLES of flawed reasoning — it never generates or endorses the rhetoric itself, only labels
