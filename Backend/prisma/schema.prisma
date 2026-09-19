@@ -24,7 +24,7 @@ enum FallacySubCategory {
   relevance
   ambiguity
   presumption
-  weak_induction @map("weak-induction")
+  weak_induction @map("weak_induction")
 }
 
 enum Difficulty {

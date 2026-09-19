@@ -17,7 +17,6 @@ export async function identifyUser(req: IdentifiedRequest, _res: Response, next:
       const user = await prisma.user.findUnique({ where: { supabaseUserId: claims.sub } })
       if (!user) return next(new AppError('User not found — call /api/auth/register first', 404))
       req.currentUser = user
-    if (user.isSuspended) return next(new AppError('This account has been suspended.', 403))
       return next()
     }
     const guestId = req.headers['x-guest-id']

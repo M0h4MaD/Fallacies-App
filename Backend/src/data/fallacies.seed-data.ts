@@ -1,15 +1,17 @@
 // backend/src/data/fallacies.seed-data.ts (استبدله كامل — زدت category/subCategory/difficulty، مطابقة لنفس التصنيف يلي بالفرونت)
-export interface FallacyDraft {
-  slug: string;
-  nameAr: string;
-  nameEn: string;
-  category: "informal" | "formal";
-  subCategory: "relevance" | "ambiguity" | "presumption" | "weak-induction";
-  difficulty: "beginner" | "intermediate" | "advanced";
-  definitionAr: string;
-  definitionEn: string;
-}
+import type { FallacyCategory, FallacySubCategory, Difficulty } from '@prisma/client'
 
+
+export interface FallacyDraft {
+  slug: string
+  nameAr: string
+  nameEn: string
+  category: FallacyCategory
+  subCategory: FallacySubCategory
+  difficulty: Difficulty
+  definitionAr: string
+  definitionEn: string
+}
 export const fallaciesDraft: FallacyDraft[] = [
   {
     slug: "ad-hominem",
@@ -71,7 +73,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     nameAr: "المنحدر الزلق",
     nameEn: "Slippery Slope",
     category: "informal",
-    subCategory: "weak-induction",
+    subCategory: "weak_induction",
     difficulty: "intermediate",
     definitionAr: "الادعاء أن خطوة صغيرة ستؤدي لنتائج كارثية دون دليل.",
     definitionEn:
@@ -82,7 +84,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     nameAr: "التعميم المتسرع",
     nameEn: "Hasty Generalization",
     category: "informal",
-    subCategory: "weak-induction",
+    subCategory: "weak_induction",
     difficulty: "intermediate",
     definitionAr: "استخلاص حكم عام من أمثلة قليلة جداً.",
     definitionEn: "Drawing a broad conclusion from too few examples.",
@@ -134,7 +136,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     nameAr: "السبب الزائف",
     nameEn: "False Cause",
     category: "informal",
-    subCategory: "weak-induction",
+    subCategory: "weak_induction",
     difficulty: "intermediate",
     definitionAr: "افتراض سببية بين حدثين لمجرد تتابعهما زمنياً.",
     definitionEn:

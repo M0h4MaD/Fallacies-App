@@ -4,7 +4,7 @@
 import { prisma } from "../config/prisma.js";
 import { generateQuestionBatch } from "./questionGenerator.js";
 import { AppError } from "../middleware/errorHandler.js";
-import type { Difficulty } from "@prisma/client";
+import type { Difficulty, QuizMode } from '@prisma/client'
 
 const REFILL_THRESHOLD = 5;
 const REFILL_BATCH_SIZE = 3;

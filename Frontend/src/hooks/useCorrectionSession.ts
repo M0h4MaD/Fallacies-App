@@ -1,11 +1,15 @@
-// frontend/src/hooks/useCorrectionSession.ts (ملف جديد)
-import { useCallback, useEffect, useState } from 'react'
+// frontend/src/hooks/useCorrectionSession.ts (استبدله كامل)
+import { useEffect, useState } from 'react'
 import { apiClient } from '../lib/apiClient'
 import { useAuthStore } from '../store/authStore'
 import type { Fallacy } from '../types'
 
 interface CorrectionQuestion { text: { ar: string; en: string } }
 interface EvaluatorResult { identifiedCorrectFallacy: boolean; rewriteRemovesFallacy: boolean; clarityScore: number; feedback: string }
+
+function pickRandom(fallacies: Fallacy[]): Fallacy | undefined {
+  return fallacies[Math.floor(Math.random() * fallacies.length)]
+}
 
 export function useCorrectionSession(unlockedFallacies: Fallacy[], lang: 'ar' | 'en') {
   const level = useAuthStore((s) => s.appUser?.level ?? 1)
@@ -17,21 +21,28 @@ export function useCorrectionSession(unlockedFallacies: Fallacy[], lang: 'ar' | 
   const [rewriteText, setRewriteText] = useState('')
   const [result, setResult] = useState<EvaluatorResult | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [round, setRound] = useState(0) // loadNext() يزيدها لإعادة تشغيل الـ effect تحت
 
   const difficulty = level >= 8 ? 'advanced' : level >= 4 ? 'intermediate' : 'beginner'
 
-  const loadNext = useCallback(() => {
+  useEffect(() => {
     if (unlockedFallacies.length === 0) return
-    setGuessedSlug(null); setRewriteText(''); setResult(null); setError(null); setIsLoading(true)
-    const picked = unlockedFallacies[Math.floor(Math.random() * unlockedFallacies.length)]
-    setTargetFallacy(picked)
+    const picked = pickRandom(unlockedFallacies)
+    if (!picked) return
     apiClient.get<CorrectionQuestion>(`/api/questions/${picked.slug}/next`, { params: { difficulty, mode: 'correction' } })
-      .then((res) => setQuestion(res.data))
+      .then((res) => { setTargetFallacy(picked); setQuestion(res.data) })
       .catch((err) => setError(err.message))
       .finally(() => setIsLoading(false))
-  }, [unlockedFallacies, difficulty])
+  }, [unlockedFallacies, difficulty, round])
 
-  useEffect(() => { loadNext() }, [loadNext])
+  function loadNext() {
+    setGuessedSlug(null)
+    setRewriteText('')
+    setResult(null)
+    setError(null)
+    setIsLoading(true)
+    setRound((r) => r + 1)
+  }
 
   function guess(slug: string) { if (!guessedSlug) setGuessedSlug(slug) }
 

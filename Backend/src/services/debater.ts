@@ -2,6 +2,7 @@
 import { z } from 'zod'
 import { callGemini } from './geminiCall.js'
 import { wrapUserText } from './promptSafety.js'
+import { AppError } from '../middleware/errorHandler.js'
 
 interface DebaterTurn { speaker: 'user' | 'opponent'; text: string }
 
@@ -18,6 +19,7 @@ export async function generateDebaterTurn(
   history: DebaterTurn[],
   lang: 'ar' | 'en',
 ) {
+  if (availableFallacies.length === 0) throw new AppError('No fallacies available yet — has the library been seeded?', 503)
   const fallacyList = availableFallacies.map((f) => `- ${f.slug}: ${f.nameEn} (${f.definitionEn})`).join('\n')
   const transcript = history.map((h) => `${h.speaker === 'user' ? 'User' : 'Opponent'}: ${h.text}`).join('\n')
 

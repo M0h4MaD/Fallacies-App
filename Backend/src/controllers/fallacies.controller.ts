@@ -2,9 +2,9 @@
 import type { Request, Response } from "express";
 import { prisma } from "../config/prisma.js";
 import { AppError } from "../middleware/errorHandler.js";
-import type { AuthedRequest } from "../middleware/auth.js";
 import { unlockedFallacyCount } from "../services/unlock.js";
 import type { IdentifiedRequest } from '../middleware/identify.js'
+import { asString } from '../lib/params.js'
 
 export async function listFallacies(_req: Request, res: Response) {
   res.json(
@@ -15,7 +15,7 @@ export async function listFallacies(_req: Request, res: Response) {
 }
 export async function getFallacy(req: Request, res: Response) {
   const fallacy = await prisma.fallacy.findUnique({
-    where: { slug: req.params.slug },
+    where: { slug: asString(req.params.slug) },
     include: { examples: true },
   });
   if (!fallacy) throw new AppError("Fallacy not found", 404);
@@ -28,7 +28,7 @@ export async function updateFallacy(req: Request, res: Response) {
   try {
     res.json(
       await prisma.fallacy.update({
-        where: { slug: req.params.slug },
+        where: { slug: asString(req.params.slug) },
         data: req.body,
       }),
     );
@@ -38,7 +38,7 @@ export async function updateFallacy(req: Request, res: Response) {
 }
 export async function deleteFallacy(req: Request, res: Response) {
   try {
-    await prisma.fallacy.delete({ where: { slug: req.params.slug } });
+    await prisma.fallacy.delete({ where: { slug: asString(req.params.slug) } });
     res.status(204).send();
   } catch {
     throw new AppError("Fallacy not found", 404);

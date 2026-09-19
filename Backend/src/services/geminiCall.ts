@@ -7,10 +7,11 @@ import { AppError } from "../middleware/errorHandler.js";
 import { containsFlaggedContent } from "./profanityCheck.js";
 
 interface CallGeminiOptions {
-  userId: string;
+  userId: string | null;
   prompt: string;
   responseSchema?: object;
   maxRetries?: number;
+  timeoutMs?: number; // مهلة زمنية مخصصة للملف (افتراضياً 30 ثانية)
 }
 
 export async function callGemini({
