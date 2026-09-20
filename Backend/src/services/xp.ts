@@ -9,7 +9,7 @@ const MODE_MULTIPLIER: Record<QuizMode, number> = { scenario: 1, correction: 1.5
 export function xpForAnswer(difficulty: Difficulty, mode: QuizMode, wasCorrect: boolean, hintUsed: boolean): number {
   if (!wasCorrect) return 0
   const base = Math.round(XP_PER_DIFFICULTY[difficulty] * MODE_MULTIPLIER[mode])
-  return hintUsed ? Math.round(base * 0.5) : base // hint = نصف الخبرة (spec 4-C: "small XP cost per use")
+return hintUsed ? Math.round(base * 0.5) : base // "small XP cost per use" (spec 4-C) = نصف الخبرة
 }
 
 export function levelForXp(totalXp: number): number {

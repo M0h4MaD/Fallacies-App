@@ -3,10 +3,17 @@ import type { Response } from 'express'
 import { prisma } from '../config/prisma.js'
 import type { AuthedRequest } from '../middleware/auth.js'
 import type { IdentifiedRequest } from '../middleware/identify.js'
+import { randomUUID } from 'node:crypto'
+import { randomGuestName } from '../lib/guestNames.js'
 
 export async function continueAsGuest(req: AuthedRequest, res: Response) {
-  const { guestId, displayName } = req.body as { guestId: string; displayName?: string }
-  const user = await prisma.user.upsert({ where: { guestId }, update: {}, create: { guestId, isGuest: true, displayName: displayName ?? 'Guest' } })
+  const { guestId, displayName } = req.body as { guestId?: string; displayName?: string }
+  const finalGuestId = guestId ?? randomUUID()
+  const user = await prisma.user.upsert({
+    where: { guestId: finalGuestId },
+    update: {},
+    create: { guestId: finalGuestId, isGuest: true, displayName: displayName ?? randomGuestName() },
+  })
   res.json(user)
 }
 

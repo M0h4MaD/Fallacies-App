@@ -1,14 +1,12 @@
-// frontend/src/pages/QuizPage.tsx (استبدله كامل)
+// frontend/src/pages/QuizPage.tsx — بدّل الملف كامل (زيد قسم التلميح/الإبلاغ فوق أزرار الإجابة، بس قبل ما ينكشف الجواب)
 import { useParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useQuizSession } from "../hooks/useQuizSession";
-import { apiClient } from "../lib/apiClient";
 
 export default function QuizPage() {
   const { fallacySlug } = useParams<{ fallacySlug: string }>();
   const { i18n } = useTranslation();
   const lang = i18n.language === "en" ? "en" : "ar";
-
   if (!fallacySlug)
     return (
       <p className="text-text-muted">
@@ -33,7 +31,11 @@ function FallacyQuiz({ slug, lang }: { slug: string; lang: "ar" | "en" }) {
     result,
     answeredCount,
     totalQuestions,
+    fallacyHint,
+    hintUsedThisQuestion,
     markHintUsed,
+    reportSent,
+    reportQuestion,
   } = useQuizSession(slug);
 
   if (isFinished) {
@@ -56,21 +58,6 @@ function FallacyQuiz({ slug, lang }: { slug: string; lang: "ar" | "en" }) {
             ? `+${result.xpAwarded} نقطة خبرة · مستوى ${result.newLevel}`
             : `+${result.xpAwarded} XP · Level ${result.newLevel}`}
         </p>
-        {Object.entries(result.perFallacyBreakdown).length > 0 && (
-          <div className="mb-8 divide-y divide-border border-t border-border">
-            {Object.entries(result.perFallacyBreakdown).map(([fid, stat]) => (
-              <div
-                key={fid}
-                className="flex items-center justify-between py-3 text-sm"
-              >
-                <span className="text-text-muted">{fid}</span>
-                <span className="text-text">
-                  {stat.correct}/{stat.total}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
         <Link
           to="/library"
           className="inline-block rounded-lg bg-brand px-6 py-3 font-medium text-white transition-colors hover:bg-brand-hover"
@@ -96,25 +83,35 @@ function FallacyQuiz({ slug, lang }: { slug: string; lang: "ar" | "en" }) {
           ? `${answeredCount + 1} من ${totalQuestions}`
           : `${answeredCount + 1} of ${totalQuestions}`}
       </p>
-      <p className="mb-8 font-heading text-2xl font-bold text-text">
-        “{lang === "ar" ? question.text.ar : question.text.en}”
+      <p className="mb-4 whitespace-pre-line font-heading text-2xl font-bold text-text">
+        "{lang === "ar" ? question.text.ar : question.text.en}"
       </p>
 
-      <div className="mb-3 flex justify-end gap-3 text-sm text-text-muted">
-        <button onClick={markHintUsed}>
-          {lang === "ar" ? "💡 تلميح" : "💡 Hint"}
-        </button>
-        <button
-          onClick={() =>
-            apiClient.post("/api/reports", {
-              contentType: "question",
-              contentText: lang === "ar" ? question.text.ar : question.text.en,
-            })
-          }
-        >
-          {lang === "ar" ? "🚩 إبلاغ" : "🚩 Report"}
-        </button>
-      </div>
+      {!revealed && (
+        <div className="mb-6 flex gap-4 text-sm text-text-muted">
+          <button onClick={markHintUsed} disabled={hintUsedThisQuestion}>
+            {hintUsedThisQuestion
+              ? "💡"
+              : lang === "ar"
+                ? "💡 تلميح"
+                : "💡 Hint"}
+          </button>
+          <button onClick={reportQuestion} disabled={reportSent}>
+            {reportSent
+              ? lang === "ar"
+                ? "✓ تم الإبلاغ"
+                : "✓ Reported"
+              : lang === "ar"
+                ? "🚩 إبلاغ"
+                : "🚩 Report"}
+          </button>
+        </div>
+      )}
+      {hintUsedThisQuestion && fallacyHint && (
+        <p className="mb-6 rounded-lg border border-border bg-surface p-3 text-sm text-text-muted">
+          {lang === "ar" ? fallacyHint.ar : fallacyHint.en}
+        </p>
+      )}
 
       {!revealed ? (
         <div className="flex gap-3">
@@ -134,9 +131,7 @@ function FallacyQuiz({ slug, lang }: { slug: string; lang: "ar" | "en" }) {
       ) : (
         <div>
           <p className={wasCorrectLast ? "text-brand" : "text-flag"}>
-            {lang === "ar"
-              ? "تمام، سجّلنا إجابتك — كمّل تتعلّم التفاصيل بصفحة المكتبة."
-              : "Noted — keep learning the details on the fallacy's Library page."}
+            {lang === "ar" ? "تمام، سجّلنا إجابتك." : "Noted."}
           </p>
           <button
             onClick={next}

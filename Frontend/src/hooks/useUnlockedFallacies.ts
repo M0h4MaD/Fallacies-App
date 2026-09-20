@@ -1,10 +1,13 @@
-// frontend/src/hooks/useUnlockedFallacies.ts (ملف جديد)
+// frontend/src/hooks/useUnlockedFallacies.ts (استبدله كامل — كان بدون معالجة خطأ إطلاقاً، فالفشل كان صامت)
 import { useEffect, useState } from 'react'
 import { apiClient } from '../lib/apiClient'
 import type { Fallacy } from '../types'
 
 export function useUnlockedFallacies() {
   const [fallacies, setFallacies] = useState<Fallacy[]>([])
-  useEffect(() => { apiClient.get<Fallacy[]>('/api/fallacies/unlocked').then((r) => setFallacies(r.data)) }, [])
-  return { fallacies }
+  const [error, setError] = useState<string | null>(null)
+  useEffect(() => {
+    apiClient.get<Fallacy[]>('/api/fallacies/unlocked').then((r) => setFallacies(r.data)).catch((err) => setError(err.message))
+  }, [])
+  return { fallacies, error }
 }

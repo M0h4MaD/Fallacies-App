@@ -1,0 +1,2 @@
+1. We need en and ar guest names
+2. When sign in we should make server gives the user guestId

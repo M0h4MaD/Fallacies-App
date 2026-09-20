@@ -32,7 +32,7 @@ export default function CorrectionPage() {
   return (
     <div>
       <h1 className="mb-6 font-heading text-2xl font-bold text-text">{lang === 'ar' ? 'صحّح الجملة' : 'Fix the Sentence'}</h1>
-      <p className="mb-8 font-heading text-xl font-bold text-text">“{lang === 'ar' ? question.text.ar : question.text.en}”</p>
+      <p className="mb-8 font-heading text-xl font-bold text-text whitespace-pre-line">“{lang === 'ar' ? question.text.ar : question.text.en}”</p>
 
       {!guessedSlug ? (
         <div>

@@ -1,17 +1,22 @@
-// backend/src/data/fallacies.seed-data.ts (استبدله كامل — زدت category/subCategory/difficulty، مطابقة لنفس التصنيف يلي بالفرونت)
-import type { FallacyCategory, FallacySubCategory, Difficulty } from '@prisma/client'
-
+// backend/src/data/fallacies.seed-data.ts (استبدله كامل)
+import type {
+  FallacyCategory,
+  FallacySubCategory,
+  Difficulty,
+} from "@prisma/client";
 
 export interface FallacyDraft {
-  slug: string
-  nameAr: string
-  nameEn: string
-  category: FallacyCategory
-  subCategory: FallacySubCategory
-  difficulty: Difficulty
-  definitionAr: string
-  definitionEn: string
+  slug: string;
+  nameAr: string;
+  nameEn: string;
+  category: FallacyCategory;
+  subCategory: FallacySubCategory;
+  difficulty: Difficulty;
+  commonness: number;
+  definitionAr: string;
+  definitionEn: string;
 }
+
 export const fallaciesDraft: FallacyDraft[] = [
   {
     slug: "ad-hominem",
@@ -20,6 +25,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "relevance",
     difficulty: "beginner",
+    commonness: 5,
     definitionAr: "مهاجمة شخص القائل بدل مناقشة حجته.",
     definitionEn:
       "Attacking the person making an argument instead of addressing the argument itself.",
@@ -31,6 +37,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "relevance",
     difficulty: "beginner",
+    commonness: 5,
     definitionAr: "تحريف حجة الخصم لنسخة أضعف ثم الرد عليها.",
     definitionEn:
       "Misrepresenting an opponent's argument as a weaker version, then refuting that instead.",
@@ -42,6 +49,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "presumption",
     difficulty: "beginner",
+    commonness: 4,
     definitionAr: "تقديم خيارين فقط كأنهما الوحيدان مع وجود بدائل.",
     definitionEn:
       "Presenting only two options as if they were the only possibilities when more exist.",
@@ -53,6 +61,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "relevance",
     difficulty: "intermediate",
+    commonness: 4,
     definitionAr: "اعتبار الرأي صحيحاً لمكانة قائله لا لقوة دليله.",
     definitionEn:
       "Treating a claim as true mainly because of who said it, not the strength of the evidence.",
@@ -64,6 +73,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "relevance",
     difficulty: "beginner",
+    commonness: 5,
     definitionAr: "إثارة مشاعر كالخوف بدل تقديم حجة منطقية.",
     definitionEn:
       "Manipulating an emotion, like fear, instead of presenting a logical argument.",
@@ -75,6 +85,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "weak_induction",
     difficulty: "intermediate",
+    commonness: 4,
     definitionAr: "الادعاء أن خطوة صغيرة ستؤدي لنتائج كارثية دون دليل.",
     definitionEn:
       "Claiming a small first step will inevitably lead to extreme consequences, with no evidence for the chain.",
@@ -86,6 +97,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "weak_induction",
     difficulty: "intermediate",
+    commonness: 4,
     definitionAr: "استخلاص حكم عام من أمثلة قليلة جداً.",
     definitionEn: "Drawing a broad conclusion from too few examples.",
   },
@@ -96,6 +108,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "presumption",
     difficulty: "advanced",
+    commonness: 2,
     definitionAr: "استخدام النتيجة نفسها كدليل على المقدمة.",
     definitionEn: "Using the conclusion itself as a premise that supports it.",
   },
@@ -106,6 +119,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "relevance",
     difficulty: "intermediate",
+    commonness: 4,
     definitionAr: "إدخال نقطة غير ذات صلة لتحويل النقاش.",
     definitionEn:
       "Introducing an irrelevant point to divert attention from the argument.",
@@ -117,6 +131,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "presumption",
     difficulty: "intermediate",
+    commonness: 3,
     definitionAr: "اعتبار الادعاء صحيحاً لعدم إثبات خطئه.",
     definitionEn:
       "Treating a claim as true simply because it hasn't been proven false.",
@@ -128,6 +143,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "relevance",
     difficulty: "beginner",
+    commonness: 4,
     definitionAr: "اعتبار الفكرة صحيحة لأن كثيرين يؤمنون بها.",
     definitionEn: "Treating an idea as true because many people believe it.",
   },
@@ -138,6 +154,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "weak_induction",
     difficulty: "intermediate",
+    commonness: 4,
     definitionAr: "افتراض سببية بين حدثين لمجرد تتابعهما زمنياً.",
     definitionEn:
       "Assuming one event caused another just because it happened first.",
@@ -149,6 +166,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "relevance",
     difficulty: "intermediate",
+    commonness: 3,
     definitionAr: "اعتبار الممارسة صحيحة لأنها قديمة ومتوارثة.",
     definitionEn:
       "Treating a practice as correct simply because it's old and long-established.",
@@ -160,6 +178,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "relevance",
     difficulty: "intermediate",
+    commonness: 4,
     definitionAr: "الرد على انتقاد باتهام المنتقِد بنفس الشيء.",
     definitionEn:
       "Responding to criticism by accusing the critic of the same thing.",
@@ -171,6 +190,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "presumption",
     difficulty: "advanced",
+    commonness: 3,
     definitionAr: "سؤال يتضمن افتراضاً مسبقاً غير مثبت يدين أي إجابة.",
     definitionEn:
       "Asking a question that contains an unproven assumption, so any answer looks guilty.",
@@ -182,6 +202,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "ambiguity",
     difficulty: "advanced",
+    commonness: 1,
     definitionAr: "استخدام كلمة بمعنيين مختلفين ضمن نفس الحجة.",
     definitionEn:
       "Using a word with two different meanings within the same argument.",
@@ -193,6 +214,7 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "presumption",
     difficulty: "advanced",
+    commonness: 2,
     definitionAr: "استبعاد أي مثال مضاد بادّعاء أنه لا يمثل الفئة الحقيقية.",
     definitionEn:
       "Dismissing a counterexample by claiming it doesn't represent the 'real' category.",
@@ -204,7 +226,615 @@ export const fallaciesDraft: FallacyDraft[] = [
     category: "informal",
     subCategory: "presumption",
     difficulty: "advanced",
+    commonness: 3,
     definitionAr: "اعتبار الشيء جيداً لأنه طبيعي فقط.",
     definitionEn: "Treating something as good simply because it's 'natural.'",
+  },
+  {
+    slug: "appeal-to-pity",
+    nameAr: "الاستعطاف",
+    nameEn: "Appeal to Pity",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "beginner",
+    commonness: 4,
+    definitionAr: "محاولة كسب الحجة بإثارة الشفقة بدل تقديم دليل.",
+    definitionEn:
+      "Winning an argument by evoking pity instead of offering evidence.",
+  },
+  {
+    slug: "appeal-to-force",
+    nameAr: "التهديد بالقوة",
+    nameEn: "Appeal to Force",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "beginner",
+    commonness: 2,
+    definitionAr: "فرض قبول الفكرة بالتهديد بدل الإقناع.",
+    definitionEn:
+      "Forcing acceptance of an idea through threats instead of persuasion.",
+  },
+  {
+    slug: "genetic-fallacy",
+    nameAr: "المغالطة الجينية",
+    nameEn: "Genetic Fallacy",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr: "الحكم على فكرة بناءً على أصلها أو مصدرها لا على محتواها.",
+    definitionEn:
+      "Judging an idea by its origin or source rather than its actual content.",
+  },
+  {
+    slug: "appeal-to-wealth",
+    nameAr: "الاحتكام إلى الثروة",
+    nameEn: "Appeal to Wealth",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "beginner",
+    commonness: 2,
+    definitionAr: "اعتبار الرأي صحيحاً لأن قائله غني.",
+    definitionEn:
+      "Treating an opinion as correct because the person holding it is wealthy.",
+  },
+  {
+    slug: "appeal-to-poverty",
+    nameAr: "الاحتكام إلى الفقر",
+    nameEn: "Appeal to Poverty",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "beginner",
+    commonness: 2,
+    definitionAr: "اعتبار الرأي صحيحاً لأن قائله فقير أو بسيط الحال.",
+    definitionEn:
+      "Treating an opinion as correct because the person holding it is poor.",
+  },
+  {
+    slug: "appeal-to-novelty",
+    nameAr: "الاحتكام إلى الحداثة",
+    nameEn: "Appeal to Novelty",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "beginner",
+    commonness: 3,
+    definitionAr: "اعتبار الفكرة صحيحة أو أفضل لمجرد أنها جديدة.",
+    definitionEn:
+      "Treating an idea as correct or better simply because it's new.",
+  },
+  {
+    slug: "guilt-by-association",
+    nameAr: "الإدانة بالانتساب",
+    nameEn: "Guilt by Association",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "intermediate",
+    commonness: 4,
+    definitionAr: "رفض فكرة لأن شخصاً غير محبوب يؤمن بها أيضاً.",
+    definitionEn: "Rejecting an idea because someone disliked also holds it.",
+  },
+  {
+    slug: "two-wrongs",
+    nameAr: "خطأان يصنعان صواباً",
+    nameEn: "Two Wrongs Make a Right",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "beginner",
+    commonness: 4,
+    definitionAr: "تبرير فعل خاطئ بالإشارة إلى خطأ آخر مماثل.",
+    definitionEn:
+      "Justifying a wrong action by pointing to another similar wrong.",
+  },
+  {
+    slug: "whataboutism",
+    nameAr: 'مغالطة "وماذا عن"',
+    nameEn: "Whataboutism",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "beginner",
+    commonness: 5,
+    definitionAr: "الرد على انتقاد بإثارة انتقاد مختلف بدل معالجة الأول.",
+    definitionEn:
+      "Deflecting a criticism by raising a different, unrelated criticism instead of addressing it.",
+  },
+  {
+    slug: "poisoning-the-well",
+    nameAr: "تسميم البئر",
+    nameEn: "Poisoning the Well",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr: "تقديم معلومات سلبية عن شخص مسبقاً لتشويه أي شيء سيقوله.",
+    definitionEn:
+      "Preemptively discrediting a person so anything they say later is dismissed.",
+  },
+  {
+    slug: "appeal-to-consequences",
+    nameAr: "الاحتجاج بالعواقب",
+    nameEn: "Appeal to Consequences",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr:
+      "الحكم على صحة فكرة بناءً على مدى إعجابنا بنتائجها لا بدليلها.",
+    definitionEn:
+      "Judging whether an idea is true based on how desirable its consequences are, not its evidence.",
+  },
+  {
+    slug: "style-over-substance",
+    nameAr: "الشكل قبل المضمون",
+    nameEn: "Style Over Substance",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr: "تقييم حجة بناءً على طريقة عرضها لا قوة منطقها.",
+    definitionEn:
+      "Judging an argument by how it is presented rather than the strength of its logic.",
+  },
+  {
+    slug: "appeal-to-motive",
+    nameAr: "الطعن بالنية",
+    nameEn: "Appeal to Motive",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "intermediate",
+    commonness: 4,
+    definitionAr: "رفض حجة بالتشكيك بدافع صاحبها بدل مناقشة محتواها.",
+    definitionEn:
+      "Dismissing an argument by questioning the arguer's motive instead of its content.",
+  },
+  {
+    slug: "appeal-to-flattery",
+    nameAr: "الاستمالة بالمديح",
+    nameEn: "Appeal to Flattery",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "beginner",
+    commonness: 2,
+    definitionAr: "استخدام المديح لكسب موافقة بدل تقديم حجة.",
+    definitionEn:
+      "Using flattery to win agreement instead of offering an argument.",
+  },
+  {
+    slug: "relative-privation",
+    nameAr: '"ليس بذلك السوء"',
+    nameEn: "Relative Privation",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "intermediate",
+    commonness: 4,
+    definitionAr: "رفض معالجة مشكلة لأن هناك مشاكل أسوأ بمكان آخر.",
+    definitionEn: "Dismissing a problem because a worse one exists elsewhere.",
+  },
+  {
+    slug: "appeal-to-ridicule",
+    nameAr: "السخرية كحجة",
+    nameEn: "Appeal to Ridicule",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "beginner",
+    commonness: 4,
+    definitionAr: "السخرية من فكرة لجعلها تبدو غير جديرة بالنقاش بدل دحضها.",
+    definitionEn:
+      "Mocking an idea to make it look unworthy of discussion instead of refuting it.",
+  },
+  {
+    slug: "appeal-to-fear",
+    nameAr: "استغلال الخوف",
+    nameEn: "Appeal to Fear",
+    category: "informal",
+    subCategory: "relevance",
+    difficulty: "beginner",
+    commonness: 5,
+    definitionAr: "إقناع شخص بموقف عبر تخويفه لا عبر الدليل.",
+    definitionEn:
+      "Persuading someone toward a position by frightening them rather than by evidence.",
+  },
+  {
+    slug: "amphiboly",
+    nameAr: "الغموض النحوي",
+    nameEn: "Amphiboly",
+    category: "informal",
+    subCategory: "ambiguity",
+    difficulty: "advanced",
+    commonness: 2,
+    definitionAr: "جملة تحتمل أكثر من معنى بسبب تركيبها النحوي الملتبس.",
+    definitionEn:
+      "A sentence with more than one possible meaning due to ambiguous grammatical structure.",
+  },
+  {
+    slug: "composition-fallacy",
+    nameAr: "مغالطة التركيب",
+    nameEn: "Composition Fallacy",
+    category: "informal",
+    subCategory: "ambiguity",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr: "افتراض أن ما يصح على الأجزاء يصح على الكل.",
+    definitionEn:
+      "Assuming what is true of the parts must be true of the whole.",
+  },
+  {
+    slug: "division-fallacy",
+    nameAr: "مغالطة التقسيم",
+    nameEn: "Division Fallacy",
+    category: "informal",
+    subCategory: "ambiguity",
+    difficulty: "intermediate",
+    commonness: 2,
+    definitionAr: "افتراض أن ما يصح على الكل يصح على كل جزء منه.",
+    definitionEn:
+      "Assuming what is true of the whole must be true of each of its parts.",
+  },
+  {
+    slug: "accent-fallacy",
+    nameAr: "مغالطة النبرة",
+    nameEn: "Accent Fallacy",
+    category: "informal",
+    subCategory: "ambiguity",
+    difficulty: "advanced",
+    commonness: 1,
+    definitionAr: "تغيير معنى الجملة بتغيير الكلمة التي يقع عليها التشديد.",
+    definitionEn:
+      "Changing a sentence's meaning by shifting which word carries the emphasis.",
+  },
+  {
+    slug: "continuum-fallacy",
+    nameAr: "مغالطة السلسلة المتصلة",
+    nameEn: "Continuum Fallacy",
+    category: "informal",
+    subCategory: "ambiguity",
+    difficulty: "advanced",
+    commonness: 2,
+    definitionAr: "إنكار فرق حقيقي بين طرفين لأن الانتقال بينهما تدريجي.",
+    definitionEn:
+      "Denying a real distinction between two things because the transition between them is gradual.",
+  },
+  {
+    slug: "begging-the-question",
+    nameAr: "المصادرة على المطلوب",
+    nameEn: "Begging the Question",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr: "بناء حجة على افتراض مسبق هو نفسه محل النقاش.",
+    definitionEn:
+      "Building an argument on a premise that already assumes the very thing being debated.",
+  },
+  {
+    slug: "complex-question",
+    nameAr: "السؤال المركب",
+    nameEn: "Complex Question",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr:
+      "سؤال يجمع أكثر من قضية بحيث لا يمكن الإجابة عليه بإجابة واحدة صادقة.",
+    definitionEn:
+      "A question that bundles more than one claim, so no single honest answer is possible.",
+  },
+  {
+    slug: "false-analogy",
+    nameAr: "القياس الخاطئ",
+    nameEn: "False Analogy",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "intermediate",
+    commonness: 4,
+    definitionAr: "مقارنة بين حالتين مختلفتين جوهرياً كأنهما متطابقتان.",
+    definitionEn:
+      "Comparing two things that differ in essential ways as if they were equivalent.",
+  },
+  {
+    slug: "false-equivalence",
+    nameAr: "المعادلة الزائفة",
+    nameEn: "False Equivalence",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "intermediate",
+    commonness: 4,
+    definitionAr: "معاملة أمرين متفاوتين بالخطورة أو الأدلة وكأنهما متساويان.",
+    definitionEn:
+      "Treating two things of very different severity or evidentiary weight as if they were equal.",
+  },
+  {
+    slug: "middle-ground",
+    nameAr: "الحل الوسط الزائف",
+    nameEn: "Middle Ground",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr: "افتراض أن الحقيقة دائماً بمنتصف الطرح بين رأيين متطرفين.",
+    definitionEn:
+      "Assuming the truth must always lie exactly halfway between two extreme positions.",
+  },
+  {
+    slug: "moralistic-fallacy",
+    nameAr: "المغالطة الأخلاقية",
+    nameEn: "Moralistic Fallacy",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "advanced",
+    commonness: 2,
+    definitionAr: "افتراض أن ما ينبغي أن يكون هو بالضرورة ما هو كائن فعلاً.",
+    definitionEn:
+      "Assuming that how things ought to be is necessarily how they actually are.",
+  },
+  {
+    slug: "special-pleading",
+    nameAr: "الاستثناء التعسفي",
+    nameEn: "Special Pleading",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "intermediate",
+    commonness: 4,
+    definitionAr: "تطبيق معيار على الآخرين ثم استثناء النفس منه دون مبرر.",
+    definitionEn:
+      "Applying a standard to others while arbitrarily exempting oneself from it.",
+  },
+  {
+    slug: "moving-goalposts",
+    nameAr: "تحريك الأهداف",
+    nameEn: "Moving the Goalposts",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "intermediate",
+    commonness: 4,
+    definitionAr: "تغيير معايير قبول الحجة بعد ما تحقق المعيار الأصلي.",
+    definitionEn:
+      "Changing the criteria for accepting an argument after the original criteria have been met.",
+  },
+  {
+    slug: "texas-sharpshooter",
+    nameAr: "مغالطة القناص التكساسي",
+    nameEn: "Texas Sharpshooter Fallacy",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "advanced",
+    commonness: 2,
+    definitionAr:
+      "اختيار الأنماط من بيانات عشوائية بعد وقوعها لإثبات نظرية مسبقة.",
+    definitionEn:
+      "Cherry-picking patterns from random data after the fact to fit a pre-existing theory.",
+  },
+  {
+    slug: "nirvana-fallacy",
+    nameAr: "مغالطة الطوباوية",
+    nameEn: "Nirvana Fallacy",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr: "رفض حل جيد لأنه ليس مثالياً بالمطلق.",
+    definitionEn: "Rejecting a good solution because it is not perfect.",
+  },
+  {
+    slug: "furtive-fallacy",
+    nameAr: "مغالطة الخفاء",
+    nameEn: "Furtive Fallacy",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr: "افتراض أن كل حدث مهم لازم يكون وراءه تدبير أو مؤامرة خفية.",
+    definitionEn:
+      "Assuming every significant event must be the result of hidden scheming or conspiracy.",
+  },
+  {
+    slug: "chronological-snobbery",
+    nameAr: "الغطرسة الزمنية",
+    nameEn: "Chronological Snobbery",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr:
+      "افتراض أن الفكرة الأقدم خاطئة لمجرد قدمها، أو الأحدث صحيحة لمجرد حداثتها.",
+    definitionEn:
+      "Assuming an idea is wrong simply because it is old, or right simply because it is new.",
+  },
+  {
+    slug: "false-attribution",
+    nameAr: "نسب خاطئ للمصدر",
+    nameEn: "False Attribution",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr: "الاستناد لمصدر غير موثوق أو غير ذي صلة لدعم حجة.",
+    definitionEn:
+      "Citing an unreliable or irrelevant source to support a claim.",
+  },
+  {
+    slug: "etymological-fallacy",
+    nameAr: "المغالطة الاشتقاقية",
+    nameEn: "Etymological Fallacy",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "advanced",
+    commonness: 1,
+    definitionAr:
+      "افتراض أن المعنى الأصلي لكلمة هو معناها الصحيح الوحيد اليوم.",
+    definitionEn:
+      "Assuming a word's original or literal meaning is its only valid meaning today.",
+  },
+  {
+    slug: "appeal-to-probability",
+    nameAr: "الاحتكام إلى الاحتمال",
+    nameEn: "Appeal to Probability",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "intermediate",
+    commonness: 2,
+    definitionAr: "افتراض أن شيئاً سيحدث حتماً لمجرد أنه من الممكن حدوثه.",
+    definitionEn:
+      "Assuming something will definitely happen just because it is possible.",
+  },
+  {
+    slug: "ecological-fallacy",
+    nameAr: "المغالطة البيئية الإحصائية",
+    nameEn: "Ecological Fallacy",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "advanced",
+    commonness: 2,
+    definitionAr:
+      "استنتاج صفة عن فرد بناءً على بيانات المجموعة التي ينتمي إليها.",
+    definitionEn:
+      "Inferring something about an individual based only on data about the group they belong to.",
+  },
+  {
+    slug: "single-cause-fallacy",
+    nameAr: "مغالطة السبب الواحد",
+    nameEn: "Single Cause Fallacy",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "intermediate",
+    commonness: 4,
+    definitionAr:
+      "تبسيط ظاهرة معقدة بردّها لسبب واحد رغم تعدد أسبابها الفعلية.",
+    definitionEn:
+      "Oversimplifying a complex phenomenon by attributing it to a single cause when several are actually involved.",
+  },
+  {
+    slug: "false-balance",
+    nameAr: "التوازن الزائف",
+    nameEn: "False Balance",
+    category: "informal",
+    subCategory: "presumption",
+    difficulty: "intermediate",
+    commonness: 4,
+    definitionAr: "تقديم طرفين وكأنهما متكافئان بالأدلة رغم تفاوت واضح بينهما.",
+    definitionEn:
+      "Presenting two sides as equally credible despite a clear imbalance in their supporting evidence.",
+  },
+  {
+    slug: "gambler-fallacy",
+    nameAr: "مغالطة المقامر",
+    nameEn: "Gambler's Fallacy",
+    category: "informal",
+    subCategory: "weak_induction",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr: 'الاعتقاد أن نتيجة عشوائية "مستحقة" بعد سلسلة نتائج معاكسة.',
+    definitionEn:
+      'Believing a random outcome is "due" after a streak of opposite outcomes.',
+  },
+  {
+    slug: "anecdotal-evidence",
+    nameAr: "الدليل القصصي",
+    nameEn: "Anecdotal Evidence",
+    category: "informal",
+    subCategory: "weak_induction",
+    difficulty: "beginner",
+    commonness: 5,
+    definitionAr:
+      "الاعتماد على تجربة شخصية أو قصة فردية بدل بيانات موثوقة وشاملة.",
+    definitionEn:
+      "Relying on a personal story or isolated case instead of solid, representative evidence.",
+  },
+  {
+    slug: "accident-fallacy",
+    nameAr: "مغالطة الحادثة",
+    nameEn: "Accident Fallacy",
+    category: "informal",
+    subCategory: "weak_induction",
+    difficulty: "advanced",
+    commonness: 2,
+    definitionAr: "تطبيق قاعدة عامة على حالة استثنائية لا تنطبق عليها.",
+    definitionEn:
+      "Applying a general rule to an exceptional case it wasn't meant to cover.",
+  },
+  {
+    slug: "false-precision",
+    nameAr: "الدقة الزائفة",
+    nameEn: "False Precision",
+    category: "informal",
+    subCategory: "weak_induction",
+    difficulty: "advanced",
+    commonness: 2,
+    definitionAr:
+      "إعطاء رقم أو تفصيل بدقة مبالغ فيها لإيهام السامع بمصداقية غير موجودة فعلياً.",
+    definitionEn:
+      "Presenting a number or detail with exaggerated precision to falsely imply solid evidence behind it.",
+  },
+  {
+    slug: "regression-fallacy",
+    nameAr: "مغالطة الارتداد للمتوسط",
+    nameEn: "Regression Fallacy",
+    category: "informal",
+    subCategory: "weak_induction",
+    difficulty: "advanced",
+    commonness: 1,
+    definitionAr: "تفسير تحسّن طبيعي (عودة للمعدل) على أنه نتيجة تدخل معين.",
+    definitionEn:
+      "Attributing a natural return to average to some specific intervention, rather than ordinary statistical fluctuation.",
+  },
+  {
+    slug: "base-rate-neglect",
+    nameAr: "إهمال المعدل الأساسي",
+    nameEn: "Base Rate Neglect",
+    category: "informal",
+    subCategory: "weak_induction",
+    difficulty: "advanced",
+    commonness: 2,
+    definitionAr: "تجاهل الاحتمال العام لحدث ما لصالح تفاصيل فردية مثيرة.",
+    definitionEn:
+      "Ignoring the general background probability of an event in favor of vivid but less relevant specific details.",
+  },
+  {
+    slug: "cum-hoc-fallacy",
+    nameAr: "مغالطة التلازم السببي",
+    nameEn: "Cum Hoc Fallacy",
+    category: "informal",
+    subCategory: "weak_induction",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr: "افتراض أن حدوث أمرين معاً يعني أن أحدهما سبّب الآخر.",
+    definitionEn:
+      "Assuming that because two things occur together, one must have caused the other.",
+  },
+  {
+    slug: "slothful-induction",
+    nameAr: "مغالطة إهمال الاستقراء",
+    nameEn: "Slothful Induction",
+    category: "informal",
+    subCategory: "weak_induction",
+    difficulty: "advanced",
+    commonness: 2,
+    definitionAr: "إنكار استنتاج منطقي مدعوم بأدلة قوية دون سبب وجيه.",
+    definitionEn:
+      "Refusing to accept a conclusion that is well-supported by strong evidence, without good reason.",
+  },
+  {
+    slug: "biased-sample",
+    nameAr: "عيّنة متحيّزة",
+    nameEn: "Biased Sample",
+    category: "informal",
+    subCategory: "weak_induction",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr: "تعميم نتيجة من عيّنة غير ممثّلة للمجموعة الأوسع.",
+    definitionEn:
+      "Generalizing a result from a sample that does not represent the wider group.",
+  },
+  {
+    slug: "survivorship-bias",
+    nameAr: "تحيّز الناجين",
+    nameEn: "Survivorship Bias",
+    category: "informal",
+    subCategory: "weak_induction",
+    difficulty: "intermediate",
+    commonness: 3,
+    definitionAr:
+      'دراسة "الناجين" فقط من عملية ما وتجاهل من فشل أو غاب، ما يشوّه الاستنتاج.',
+    definitionEn:
+      'Studying only the "survivors" of a process while ignoring those who failed or dropped out, skewing the conclusion.',
   },
 ];

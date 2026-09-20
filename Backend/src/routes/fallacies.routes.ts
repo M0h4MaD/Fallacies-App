@@ -7,7 +7,7 @@ import { identifyUser } from '../middleware/identify.js'
 
 const router = Router()
 router.get('/', asyncHandler(listFallacies))
-router.get('/unlocked', verifySupabaseAuth, asyncHandler(listUnlockedFallacies))
+router.get('/unlocked', identifyUser, asyncHandler(listUnlockedFallacies))
 router.get('/:slug', asyncHandler(getFallacy))
 router.post('/', verifySupabaseAuth, asyncHandler(requireAdmin), asyncHandler(createFallacy))
 router.patch('/:slug', verifySupabaseAuth, asyncHandler(requireAdmin), asyncHandler(updateFallacy))

@@ -3,7 +3,7 @@
 // Single source of truth on the frontend — keep in sync with the backend models.
 
 export type FallacyCategory = 'formal' | 'informal'
-export type FallacySubCategory = 'relevance' | 'ambiguity' | 'presumption' | 'weak-induction'
+export type FallacySubCategory = 'relevance' | 'ambiguity' | 'presumption' | 'weak_induction'
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced'
 export type ExampleContext = 'political' | 'religious' | 'media' | 'everyday'
 
@@ -22,6 +22,7 @@ export interface Fallacy {
   category: FallacyCategory
   subCategory: FallacySubCategory
   difficulty: Difficulty
+  commonness: number
   definitionAr: string
   definitionEn: string
   historicalBackgroundAr?: string

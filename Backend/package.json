@@ -10,7 +10,8 @@
     "test": "vitest",
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "prime-pool": "tsx src/scripts/primeQuestionPool.ts"
   },
   "prisma": {
     "seed": "tsx src/scripts/seedFallacies.ts"
