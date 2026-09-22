@@ -3,9 +3,10 @@ import type { Response } from "express";
 import type { Difficulty, QuizMode } from "@prisma/client";
 import { prisma } from "../config/prisma.js";
 import type { IdentifiedRequest } from "../middleware/identify.js";
-import { xpForAnswer, levelForXp } from "../services/xp.js";
+import { xpForAnswer, levelForXp, xpToNextLevel } from "../services/xp.js";
 import { nextStreak } from "../services/streak.js";
 import { evaluateBadges } from "../services/badges.js";
+import { asOptionalString } from "../lib/params.js";
 
 interface SubmittedAnswer {
   fallacyId: string;
@@ -13,7 +14,7 @@ interface SubmittedAnswer {
   wasCorrect: boolean;
   hintUsed: boolean;
 }
-const REVIEW_INTERVALS_DAYS = [1, 3, 7]; // spec 4-C: missed fallacies resurface after 1/3/7 days
+const REVIEW_INTERVALS_DAYS = [1, 3, 7];
 
 export async function submitQuiz(req: IdentifiedRequest, res: Response) {
   const { mode, timeSpentSec, answers } = req.body as {
@@ -22,6 +23,24 @@ export async function submitQuiz(req: IdentifiedRequest, res: Response) {
     answers: SubmittedAnswer[];
   };
   const user = req.currentUser!;
+  const idempotencyKey = asOptionalString(req.headers["idempotency-key"]);
+
+  if (idempotencyKey) {
+    const existing = await prisma.quiz.findUnique({
+      where: { idempotencyKey },
+    });
+    if (existing) {
+      res
+        .status(200)
+        .json({
+          alreadyProcessed: true,
+          quiz: existing,
+          scorePercent: existing.scorePercent,
+          xpAwarded: existing.xpAwarded,
+        });
+      return;
+    }
+  }
 
   const correctCount = answers.filter((a) => a.wasCorrect).length;
   const scorePercent = Math.round((correctCount / answers.length) * 100);
@@ -37,6 +56,7 @@ export async function submitQuiz(req: IdentifiedRequest, res: Response) {
     today,
     user.streakCurrent,
   );
+  const previousLevel = user.level;
   const newXp = user.xp + xpAwarded;
   const newLevel = levelForXp(newXp);
 
@@ -51,6 +71,29 @@ export async function submitQuiz(req: IdentifiedRequest, res: Response) {
     },
     user.badgeIds,
   );
+  const newlyUnlockedBadgeIds = badgeIds.filter(
+    (b) => !user.badgeIds.includes(b),
+  );
+
+  const perFallacyBreakdown: Record<
+    string,
+    { correct: number; total: number }
+  > = {};
+  for (const a of answers) {
+    perFallacyBreakdown[a.fallacyId] ??= { correct: 0, total: 0 };
+    perFallacyBreakdown[a.fallacyId].total += 1;
+    if (a.wasCorrect) perFallacyBreakdown[a.fallacyId].correct += 1;
+  }
+  const withRate = Object.entries(perFallacyBreakdown).map(([id, s]) => ({
+    id,
+    rate: s.correct / s.total,
+  }));
+  const weakestFallacyId = withRate.length
+    ? withRate.reduce((a, b) => (a.rate <= b.rate ? a : b)).id
+    : null;
+  const strongestFallacyId = withRate.length
+    ? withRate.reduce((a, b) => (a.rate >= b.rate ? a : b)).id
+    : null;
 
   const existingProgress = await prisma.progress.findMany({
     where: {
@@ -61,7 +104,6 @@ export async function submitQuiz(req: IdentifiedRequest, res: Response) {
   const progressByFallacy = new Map(
     existingProgress.map((p) => [p.fallacyId, p]),
   );
-
   const progressUpserts = answers.map((a) => {
     const existing = progressByFallacy.get(a.fallacyId);
     const intervalIndex = a.wasCorrect
@@ -103,6 +145,7 @@ export async function submitQuiz(req: IdentifiedRequest, res: Response) {
         scorePercent,
         xpAwarded,
         timeSpentSec,
+        idempotencyKey,
         answers: {
           create: answers.map((a) => ({
             fallacyId: a.fallacyId,
@@ -132,19 +175,13 @@ export async function submitQuiz(req: IdentifiedRequest, res: Response) {
     scorePercent,
     xpAwarded,
     newLevel,
+    previousLevel,
     streakCurrent,
     badgeIds,
-    perFallacyBreakdown: Object.fromEntries(
-      [...new Set(answers.map((a) => a.fallacyId))].map((fid) => {
-        const fAnswers = answers.filter((a) => a.fallacyId === fid);
-        return [
-          fid,
-          {
-            correct: fAnswers.filter((a) => a.wasCorrect).length,
-            total: fAnswers.length,
-          },
-        ];
-      }),
-    ),
+    newlyUnlockedBadgeIds,
+    xpToNextLevel: xpToNextLevel(newXp),
+    weakestFallacyId,
+    strongestFallacyId,
+    perFallacyBreakdown,
   });
 }

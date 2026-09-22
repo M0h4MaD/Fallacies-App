@@ -1,6 +1,6 @@
 // backend/src/services/xp.test.ts (ملف جديد)
 import { describe, it, expect } from 'vitest'
-import { xpForAnswer, levelForXp } from './xp.js'
+import { xpForAnswer, levelForXp, xpToNextLevel } from './xp.js'
 
 describe('xpForAnswer', () => {
   it('awards 0 for a wrong answer regardless of difficulty', () => {
@@ -22,4 +22,10 @@ describe('levelForXp', () => {
 
 it('halves XP when a hint was used', () => {
   expect(xpForAnswer('beginner', 'scenario', true, true)).toBeLessThan(xpForAnswer('beginner', 'scenario', true, false))
+})
+
+describe('xpToNextLevel', () => {
+  it('decreases as xp approaches the next level', () => {
+    expect(xpToNextLevel(90)).toBeLessThan(xpToNextLevel(10))
+  })
 })

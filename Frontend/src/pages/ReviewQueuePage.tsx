@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useReviewQueue } from '../hooks/useReviewQueue'
+import LoadingTip from '../components/LoadingTip'
 
 export default function ReviewQueuePage() {
   const { i18n } = useTranslation()
@@ -13,7 +14,7 @@ export default function ReviewQueuePage() {
       <h1 className="mb-1 font-heading text-3xl font-bold text-text">{lang === 'ar' ? 'قائمة المراجعة' : 'Review Queue'}</h1>
       <p className="mb-8 text-text-muted">{lang === 'ar' ? 'مغالطات حان وقت مراجعتها' : 'Fallacies due for review'}</p>
       {isLoading ? (
-        <p className="text-text-muted">{lang === 'ar' ? 'عم نحمّل...' : 'Loading...'}</p>
+        <LoadingTip />
       ) : items.length === 0 ? (
         <p className="text-text-muted">{lang === 'ar' ? 'ولا شي بانتظار المراجعة هلق 🎉' : 'Nothing due for review right now 🎉'}</p>
       ) : (

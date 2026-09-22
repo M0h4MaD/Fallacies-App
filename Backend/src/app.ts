@@ -16,6 +16,8 @@ import progressRoutes from "./routes/progress.routes.js";
 import reportRoutes from "./routes/report.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import geminiRoutes from "./routes/gemini.routes.js";
+import tipsRoutes from "./routes/tips.routes.js";
+import detectorRoutes from "./routes/detector.routes.js";
 
 export function createApp() {
   const app = express();
@@ -44,6 +46,8 @@ export function createApp() {
   app.use("/api/reports", reportRoutes);
   app.use("/api/admin", adminRoutes);
   app.use("/api/gemini", geminiRoutes);
+  app.use("/api/tips", tipsRoutes);
+  app.use("/api/detector", detectorRoutes);
 
   app.use(errorHandler);
   return app;

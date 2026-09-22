@@ -1,111 +1,63 @@
 // frontend/src/store/authStore.ts (استبدله كامل)
-import { create } from "zustand";
-import type { Session } from "@supabase/supabase-js";
-import { supabase } from "../config/supabase";
-import { apiClient } from "../lib/apiClient";
-import { getOrCreateGuestId } from "../lib/guestId";
-import type { AppUser } from "../types";
+import { create } from 'zustand'
+import type { Session } from '@supabase/supabase-js'
+import { supabase } from '../config/supabase'
+import { apiClient } from '../lib/apiClient'
+import { getStoredGuestId, storeGuestId } from '../lib/guestId'
+import type { AppUser } from '../types'
 
 interface AuthState {
-  session: Session | null;
-  appUser: AppUser | null;
-  isLoading: boolean;
-  signInWithGoogle: () => Promise<void>;
-  signOut: () => Promise<void>;
+  session: Session | null
+  appUser: AppUser | null
+  isLoading: boolean
+  signInWithGoogle: () => Promise<void>
+  signOut: () => Promise<void>
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   session: null,
   appUser: null,
   isLoading: true,
-  signInWithGoogle: async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: window.location.origin },
-    });
-  },
-  signOut: async () => {
-    await supabase.auth.signOut();
-    set({ session: null, appUser: null });
-  },
-}));
+  signInWithGoogle: async () => { await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } }) },
+  signOut: async () => { await supabase.auth.signOut(); set({ session: null, appUser: null }) },
+}))
 
 interface ApiUserResponse {
-  id: string;
-  displayName: string;
-  isGuest: boolean;
-  xp: number;
-  level: number;
-  streakCurrent: number;
-  badgeIds: string[];
-  role: "user" | "admin";
+  id: string; guestId: string | null; displayName: string; isGuest: boolean
+  xp: number; level: number; streakCurrent: number; badgeIds: string[]; role: 'user' | 'admin'
 }
-
 function mapUser(d: ApiUserResponse): AppUser {
-  return {
-    id: d.id,
-    displayName: d.displayName,
-    isGuest: d.isGuest,
-    xp: d.xp,
-    level: d.level,
-    streak: d.streakCurrent,
-    badgeIds: d.badgeIds,
-    role: d.role,
-  };
+  return { id: d.id, displayName: d.displayName, isGuest: d.isGuest, xp: d.xp, level: d.level, streak: d.streakCurrent, badgeIds: d.badgeIds, role: d.role }
 }
 
 export function initAuthListener() {
   supabase.auth.onAuthStateChange(async (_event, session) => {
-    if (!session)
-      return useAuthStore.setState({
-        session: null,
-        appUser: null,
-        isLoading: false,
-      });
+    if (!session) return useAuthStore.setState({ session: null, appUser: null, isLoading: false })
     try {
-      const { data } = await apiClient.post<ApiUserResponse>(
-        "/api/auth/register",
-        { guestId: getOrCreateGuestId() },
-      );
-      useAuthStore.setState({
-        session,
-        appUser: mapUser(data),
-        isLoading: false,
-      });
+      const { data } = await apiClient.post<ApiUserResponse>('/api/auth/register', { guestId: getStoredGuestId() ?? undefined })
+      useAuthStore.setState({ session, appUser: mapUser(data), isLoading: false })
     } catch {
-      useAuthStore.setState({ session, appUser: null, isLoading: false });
+      useAuthStore.setState({ session, appUser: null, isLoading: false })
     }
-  });
+  })
 }
 
-export async function hydrateGuestUser() {
+// مرة وحدة عند الإقلاع: إذا في guestId محفوظ نجيب بياناتو، وإلا نخلّي السيرفر ينشئ هوية جديدة ونخزّن الـ id يلي يرجّعه.
+export async function bootstrapUser(lang: 'ar' | 'en') {
   try {
-    const { data } = await apiClient.get<ApiUserResponse>("/api/auth/me");
-    useAuthStore.setState((s) =>
-      s.session ? s : { ...s, appUser: mapUser(data), isLoading: false },
-    );
+    if (getStoredGuestId()) {
+      const { data } = await apiClient.get<ApiUserResponse>('/api/auth/me')
+      useAuthStore.setState((s) => (s.session ? s : { ...s, appUser: mapUser(data), isLoading: false }))
+    } else {
+      const { data } = await apiClient.post<ApiUserResponse>('/api/auth/guest', { lang })
+      if (data.guestId) storeGuestId(data.guestId)
+      useAuthStore.setState((s) => (s.session ? s : { ...s, appUser: mapUser(data), isLoading: false }))
+    }
   } catch {
-    useAuthStore.setState((s) => (s.session ? s : { ...s, isLoading: false }));
+    useAuthStore.setState((s) => (s.session ? s : { ...s, isLoading: false }))
   }
 }
 
-export function applyQuizResult(result: {
-  xpAwarded: number;
-  newLevel: number;
-  streakCurrent: number;
-  badgeIds: string[];
-}) {
-  useAuthStore.setState((s) =>
-    s.appUser
-      ? {
-          appUser: {
-            ...s.appUser,
-            xp: s.appUser.xp + result.xpAwarded,
-            level: result.newLevel,
-            streak: result.streakCurrent,
-            badgeIds: result.badgeIds,
-          },
-        }
-      : s,
-  );
+export function applyQuizResult(result: { xpAwarded: number; newLevel: number; streakCurrent: number; badgeIds: string[] }) {
+  useAuthStore.setState((s) => (s.appUser ? { appUser: { ...s.appUser, xp: s.appUser.xp + result.xpAwarded, level: result.newLevel, streak: result.streakCurrent, badgeIds: result.badgeIds } } : s))
 }

@@ -11,7 +11,9 @@
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
-    "prime-pool": "tsx src/scripts/primeQuestionPool.ts"
+    "prime-pool": "tsx src/scripts/primeQuestionPool.ts",
+    "seed-tips": "tsx src/scripts/seedTips.ts",
+    "prime-pool-religious": "tsx src/scripts/primeReligiousPool.ts"
   },
   "prisma": {
     "seed": "tsx src/scripts/seedFallacies.ts"

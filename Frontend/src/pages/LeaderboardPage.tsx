@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLeaderboard } from '../hooks/useLeaderboard'
 import { useAuthStore } from '../store/authStore'
+import LoadingTip from '../components/LoadingTip'
 
 export default function LeaderboardPage() {
   const { i18n } = useTranslation()
@@ -15,7 +16,7 @@ export default function LeaderboardPage() {
     <div>
       <h1 className="mb-8 font-heading text-3xl font-bold text-text">{lang === 'ar' ? 'لوحة الصدارة' : 'Leaderboard'}</h1>
       {isLoading || !data ? (
-        <p className="text-text-muted">{lang === 'ar' ? 'عم نحمّل...' : 'Loading...'}</p>
+        <LoadingTip />
       ) : (
         <>
           <div className="divide-y divide-border border-t border-border">

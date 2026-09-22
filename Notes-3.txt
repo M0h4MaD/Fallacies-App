@@ -1,0 +1,14 @@
+1. until now we don't have tips generating in loading 
+2. Leaderboards , Library and Review pages the loading all is text and not that loading component and there are no tips and historical infos in loading
+How page has the scroll but I guess we need it cuz the home page will extend but if we can hide the browser scrollbar and make one fits our design 
+4. Scroll bar in debate chat should fit the style/design of the site and when I send the message make it appear and wait for the reply not waiting to see my message and the reply together
+5. Do you think debate page should be the AI chat page? with all utilities we talk about in last msg?
+6. Invalid `prisma.user.findUnique()` invocation in D:\Web Projects\Falacies\Backend\src\middleware\auth.ts:24:34 21 } 22 23 export async function requireAdmin(req: AuthedRequest, _res: Response, next: NextFunction) problem in management page in admin role and this appears
+7. This error {"error":"Provide either a Bearer token or an X-Guest-Id header"} in correction mode even tho I am signed in with my account , I test this in backend with the same fallacy the same result appears ( No questions for this fallacy )
+8. We need to make the taking quiz page is better 
+9. The explain to me page is good but I think the page should be accessable from top so we can make the logic in AI chat, so in library the fallacy has explain as it is now so we press it and the web takes us to the Ai chat page with the same idea of it is now 
+having the same choices ( Where might I see this in everyday life? - How do I spot it quickly? - Why do people fall for it so easily? ) but in ai chat What do you think????
+10. We need to make the emojies thing better they are so flat and bad< btw this in styling the website section.
+11. We need to make correction page random fallacies not one fallacy so after this we can git rid of this problem ( No questions for this fallacy ).
+12. review page what it does?
+13. In backend debater controller I changed the first line after debaterTurn function to const { history, lang, preferredContext } = req.body as { history: Array<{ speaker: "user" | "opponent"; text: string }>; lang: 'ar' | 'en'; preferredContext?: ExampleContext }

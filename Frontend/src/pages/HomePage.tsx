@@ -1,39 +1,54 @@
 // frontend/src/pages/HomePage.tsx (استبدله كامل)
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import FallacySpotter from "../components/home/FallacySpotter";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { hasSeenOnboarding } from "../lib/onboarding";
+import FallacyPrimer from "../components/home/FallacyPrimer";
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08 } },
+};
+const item = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+};
 
 export default function HomePage() {
   const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!hasSeenOnboarding()) navigate("/onboarding", { replace: true });
-  }, [navigate]);
   const lang = i18n.language === "en" ? "en" : "ar";
 
   return (
-    <div>
-      <section className="py-10">
-        <h1 className="mb-4 font-heading text-4xl font-bold leading-tight text-text sm:text-5xl">
+    <motion.div variants={container} initial="hidden" animate="show">
+      <motion.section variants={item} className="py-10">
+        <motion.h1
+          variants={item}
+          className="mb-4 font-heading text-4xl font-bold leading-tight text-text sm:text-5xl"
+        >
           {t("app.title")}
-        </h1>
-        <p className="max-w-prose text-lg text-text-muted">
+        </motion.h1>
+        <motion.p
+          variants={item}
+          className="max-w-prose text-lg text-text-muted"
+        >
           {lang === "ar"
             ? "تعلّم تكتشف المغالطات المنطقية يلي بتنسمعها بالسياسة والدين والإعلام كل يوم — بمنطق، مش بجدل."
             : "Learn to spot the logical fallacies you hear in politics, religion, and media every day — with logic, not arguments."}
-        </p>
-        <Link
-          to="/library"
-          className="mt-8 inline-block rounded-lg bg-brand px-6 py-3 font-medium text-white transition-colors hover:bg-brand-hover"
-        >
-          {lang === "ar" ? "ابدأ التعلم" : "Start learning"}
-        </Link>
-      </section>
-
-      <FallacySpotter />
-    </div>
+        </motion.p>
+        <motion.div variants={item}>
+          <Link
+            to="/library"
+            className="mt-8 inline-block rounded-lg bg-brand px-6 py-3 font-medium text-white transition-colors hover:bg-brand-hover"
+          >
+            {lang === "ar" ? "ابدأ التعلم" : "Start learning"}
+          </Link>
+        </motion.div>
+      </motion.section>
+      <motion.div variants={item}>
+        <FallacyPrimer />
+      </motion.div>
+      <motion.div variants={item}>
+        <FallacySpotter />
+      </motion.div>
+    </motion.div>
   );
 }

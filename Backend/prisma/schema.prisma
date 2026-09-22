@@ -46,22 +46,23 @@ enum QuizMode {
 }
 
 model User {
-  id             String   @id @default(cuid())
-  supabaseUserId String?  @unique
-  guestId        String?  @unique
-  isGuest        Boolean  @default(true)
-  displayName    String
-  email          String?
-  role           Role     @default(user)
-  xp             Int      @default(0)
-  level          Int      @default(1)
-  streakCurrent  Int      @default(0)
-  streakLongest  Int      @default(0)
-  lastActiveDate String?
-  badgeIds       String[] @default([])
-  isSuspended    Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id              String   @id @default(cuid())
+  supabaseUserId  String?  @unique
+  guestId         String?  @unique
+  isGuest         Boolean  @default(true)
+  displayName     String
+  email           String?
+  role            Role     @default(user)
+  xp              Int      @default(0)
+  level           Int      @default(1)
+  streakCurrent   Int      @default(0)
+  streakLongest   Int      @default(0)
+  dailyGoalTarget Int      @default(3)
+  lastActiveDate  String?
+  badgeIds        String[] @default([])
+  isSuspended     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   unlockedFallacies Fallacy[]  @relation("UnlockedFallacies")
   quizzes           Quiz[]
@@ -93,6 +94,7 @@ model Fallacy {
   progress               Progress[]
 
   generatedQuestions GeneratedQuestion[]
+  tips               Tip[]
 }
 
 model FallacyExample {
@@ -107,14 +109,15 @@ model FallacyExample {
 }
 
 model Quiz {
-  id           String   @id @default(cuid())
-  userId       String
-  user         User     @relation(fields: [userId], references: [id])
-  mode         QuizMode
-  scorePercent Int
-  xpAwarded    Int
-  timeSpentSec Int
-  createdAt    DateTime @default(now())
+  id             String   @id @default(cuid())
+  userId         String
+  idempotencyKey String?  @unique
+  user           User     @relation(fields: [userId], references: [id])
+  mode           QuizMode
+  scorePercent   Int
+  xpAwarded      Int
+  timeSpentSec   Int
+  createdAt      DateTime @default(now())
 
   answers QuizAnswer[]
 
@@ -194,4 +197,14 @@ model Report {
   contentText String
   reason      String?
   createdAt   DateTime @default(now())
+}
+
+model Tip {
+  id        String   @id @default(cuid())
+  type      String
+  textAr    String
+  textEn    String
+  fallacyId String?
+  fallacy   Fallacy? @relation(fields: [fallacyId], references: [id])
+  createdAt DateTime @default(now())
 }

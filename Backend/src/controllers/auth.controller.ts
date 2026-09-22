@@ -1,36 +1,58 @@
 // backend/src/controllers/auth.controller.ts (استبدله كامل)
-import type { Response } from 'express'
-import { prisma } from '../config/prisma.js'
-import type { AuthedRequest } from '../middleware/auth.js'
-import type { IdentifiedRequest } from '../middleware/identify.js'
-import { randomUUID } from 'node:crypto'
-import { randomGuestName } from '../lib/guestNames.js'
+import type { Response } from "express";
+import { prisma } from "../config/prisma.js";
+import type { AuthedRequest } from "../middleware/auth.js";
+import type { IdentifiedRequest } from "../middleware/identify.js";
+import { randomUUID } from "node:crypto";
+import { randomGuestName } from "../lib/guestNames.js";
 
 export async function continueAsGuest(req: AuthedRequest, res: Response) {
-  const { guestId, displayName } = req.body as { guestId?: string; displayName?: string }
-  const finalGuestId = guestId ?? randomUUID()
+  const { guestId, displayName, lang } = req.body as {
+    guestId?: string;
+    displayName?: string;
+    lang?: "ar" | "en";
+  };
+  const finalGuestId = guestId ?? randomUUID();
   const user = await prisma.user.upsert({
     where: { guestId: finalGuestId },
     update: {},
-    create: { guestId: finalGuestId, isGuest: true, displayName: displayName ?? randomGuestName() },
-  })
-  res.json(user)
+    create: {
+      guestId: finalGuestId,
+      isGuest: true,
+      displayName: displayName ?? randomGuestName(lang ?? "ar"),
+    },
+  });
+  res.json(user);
 }
 
 export async function registerOrMerge(req: AuthedRequest, res: Response) {
-  const supabaseUserId = req.supabaseUser!.id
-  const { guestId } = req.body as { guestId?: string }
+  const supabaseUserId = req.supabaseUser!.id;
+  const { guestId } = req.body as { guestId?: string };
 
-  let user = await prisma.user.findUnique({ where: { supabaseUserId } })
-  const guest = guestId ? await prisma.user.findUnique({ where: { guestId } }) : null
+  let user = await prisma.user.findUnique({ where: { supabaseUserId } });
+  const guest = guestId
+    ? await prisma.user.findUnique({ where: { guestId } })
+    : null;
 
   if (!user && guest && !guest.supabaseUserId) {
     user = await prisma.user.update({
       where: { id: guest.id },
-      data: { supabaseUserId, isGuest: false, email: req.supabaseUser!.email, displayName: req.supabaseUser!.name ?? guest.displayName },
-    })
+      data: {
+        supabaseUserId,
+        isGuest: false,
+        email: req.supabaseUser!.email,
+        displayName: req.supabaseUser!.name ?? guest.displayName,
+      },
+    });
   } else if (!user) {
-    user = await prisma.user.create({ data: { supabaseUserId, isGuest: false, email: req.supabaseUser!.email, displayName: req.supabaseUser!.name ?? 'User' } })
+    user = await prisma.user.create({
+      data: {
+        supabaseUserId,
+        isGuest: false,
+        email: req.supabaseUser!.email,
+        displayName: req.supabaseUser!.name ?? "User",
+      },
+    });
   } else if (guest && guest.id !== user.id) {
     user = await prisma.user.update({
       where: { id: user.id },
@@ -40,12 +62,12 @@ export async function registerOrMerge(req: AuthedRequest, res: Response) {
         streakCurrent: Math.max(user.streakCurrent, guest.streakCurrent),
         streakLongest: Math.max(user.streakLongest, guest.streakLongest),
       },
-    })
-    await prisma.user.delete({ where: { id: guest.id } })
+    });
+    await prisma.user.delete({ where: { id: guest.id } });
   }
-  res.json(user)
+  res.json(user);
 }
 
 export async function getMe(req: IdentifiedRequest, res: Response) {
-  res.json(req.currentUser)
+  res.json(req.currentUser);
 }

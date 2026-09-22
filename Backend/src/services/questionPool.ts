@@ -4,7 +4,7 @@
 import { prisma } from "../config/prisma.js";
 import { generateQuestionBatch } from "./questionGenerator.js";
 import { AppError } from "../middleware/errorHandler.js";
-import type { Difficulty, QuizMode } from '@prisma/client'
+import type { Difficulty, QuizMode } from "@prisma/client";
 
 const REFILL_THRESHOLD = 5;
 const REFILL_BATCH_SIZE = 3;
@@ -32,6 +32,16 @@ export async function getPooledQuestion(
     candidates = await prisma.generatedQuestion.findMany({
       where: { fallacyId, difficultyTier, mode },
     });
+  if (candidates.length === 0) {
+    // fallback: أي صعوبة لنفس المغالطة/النمط، أفضل من خطأ فوري لحد ما تكتمل التعبئة
+    candidates = await prisma.generatedQuestion.findMany({
+      where: { fallacyId, mode, id: { notIn: recentlyShownIds } },
+    });
+    if (candidates.length === 0)
+      candidates = await prisma.generatedQuestion.findMany({
+        where: { fallacyId, mode },
+      });
+  }
   if (candidates.length === 0)
     throw new AppError(
       "No questions available for this fallacy yet — try again shortly.",
