@@ -62,15 +62,25 @@ export function useQuizSession(fallacySlug: string) {
 
   useEffect(() => {
     if (isFinished) return;
+    let cancelled = false;
     setIsLoading(true);
     setError(null);
     apiClient
       .get<LiveQuestion>(`/api/questions/${fallacySlug}/next`, {
         params: { difficulty },
       })
-      .then((res) => setQuestion(res.data))
-      .catch((err) => setError(err.message))
-      .finally(() => setIsLoading(false));
+      .then((res) => {
+        if (!cancelled) setQuestion(res.data);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err.message);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [round, isFinished, fallacySlug, difficulty]);
 
   useEffect(() => {

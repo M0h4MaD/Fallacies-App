@@ -165,17 +165,19 @@ function FallacyQuiz({ slug, lang }: { slug: string; lang: "ar" | "en" }) {
 
       {!revealed && (
         <div className="mb-6 mt-4 flex gap-4 text-sm text-text-muted">
-          <button
+          <motion.button
+            whileTap={tapScale}
             onClick={markHintUsed}
             disabled={hintUsedThisQuestion}
-            className="flex items-center gap-1"
+            className="flex cursor-pointer items-center gap-1 disabled:cursor-default"
           >
             <Lightbulb size={14} /> {lang === "ar" ? "تلميح" : "Hint"}
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileTap={tapScale}
             onClick={reportQuestion}
             disabled={reportSent}
-            className="flex items-center gap-1"
+            className="flex cursor-pointer items-center gap-1 disabled:cursor-default"
           >
             {reportSent ? (
               lang === "ar" ? (
@@ -188,7 +190,7 @@ function FallacyQuiz({ slug, lang }: { slug: string; lang: "ar" | "en" }) {
                 <Flag size={14} /> {lang === "ar" ? "إبلاغ" : "Report"}
               </>
             )}
-          </button>
+          </motion.button>
         </div>
       )}
       {hintUsedThisQuestion && fallacyHint && (

@@ -61,3 +61,17 @@ body {
 *::-webkit-scrollbar-track { background: transparent; }
 *::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 99px; }
 *::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
+
+:root {
+  --shadow-elevated: 0 20px 45px -18px rgba(28, 27, 31, 0.28), 0 8px 16px -8px rgba(28, 27, 31, 0.15);
+  --shadow-brand: 0 10px 24px -8px rgba(20, 107, 75, 0.35);
+}
+:root[data-theme='dark'] {
+  --shadow-elevated: 0 20px 45px -18px rgba(0, 0, 0, 0.55), 0 8px 16px -8px rgba(0, 0, 0, 0.35);
+  --shadow-brand: 0 10px 24px -8px rgba(52, 165, 122, 0.3);
+}
+body {
+  /* نسيج خفيف جداً — نقاط متباعدة، مش نمط صاخب */
+  background-image: radial-gradient(circle, var(--color-border) 1px, transparent 1px);
+  background-size: 32px 32px;
+}

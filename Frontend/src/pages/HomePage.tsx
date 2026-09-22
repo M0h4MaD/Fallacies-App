@@ -1,9 +1,11 @@
-// frontend/src/pages/HomePage.tsx (استبدله كامل)
+// frontend/src/pages/HomePage.tsx (استبدله كامل — عنوان الهيرو أكبر وأثقل فعلياً لأول مرة، تباين حقيقي مع باقي العناوين)
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import FallacySpotter from "../components/home/FallacySpotter";
 import FallacyPrimer from "../components/home/FallacyPrimer";
+import WhyItMatters from "../components/home/WhyItMatters";
+
 const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.08 } },
@@ -22,7 +24,7 @@ export default function HomePage() {
       <motion.section variants={item} className="py-10">
         <motion.h1
           variants={item}
-          className="mb-4 font-heading text-4xl font-bold leading-tight text-text sm:text-5xl"
+          className="mb-4 font-heading text-5xl font-extrabold leading-[1.05] tracking-tight text-text sm:text-6xl"
         >
           {t("app.title")}
         </motion.h1>
@@ -37,12 +39,15 @@ export default function HomePage() {
         <motion.div variants={item}>
           <Link
             to="/library"
-            className="mt-8 inline-block rounded-lg bg-brand px-6 py-3 font-medium text-white transition-colors hover:bg-brand-hover"
+            className="mt-8 inline-block rounded-lg bg-brand px-6 py-3 font-medium text-white shadow-[var(--shadow-brand)] transition-colors hover:bg-brand-hover"
           >
             {lang === "ar" ? "ابدأ التعلم" : "Start learning"}
           </Link>
         </motion.div>
       </motion.section>
+      <motion.div variants={item}>
+        <WhyItMatters />
+      </motion.div>
       <motion.div variants={item}>
         <FallacyPrimer />
       </motion.div>

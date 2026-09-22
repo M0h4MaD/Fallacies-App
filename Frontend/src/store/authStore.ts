@@ -61,3 +61,13 @@ export async function bootstrapUser(lang: 'ar' | 'en') {
 export function applyQuizResult(result: { xpAwarded: number; newLevel: number; streakCurrent: number; badgeIds: string[] }) {
   useAuthStore.setState((s) => (s.appUser ? { appUser: { ...s.appUser, xp: s.appUser.xp + result.xpAwarded, level: result.newLevel, streak: result.streakCurrent, badgeIds: result.badgeIds } } : s))
 }
+
+export async function updateDisplayName(name: string): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    const { data } = await apiClient.patch<ApiUserResponse>('/api/auth/me', { displayName: name })
+    useAuthStore.setState((s) => (s.appUser ? { appUser: { ...s.appUser, displayName: data.displayName } } : s))
+    return { ok: true }
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : 'Error' }
+  }
+}
