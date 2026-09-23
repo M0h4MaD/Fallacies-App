@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { Zap, Flame } from "lucide-react";
 import {
   useDebaterSession,
   type DebaterContext,
@@ -10,7 +11,7 @@ import {
 import { useUnlockedFallacies } from "../hooks/useUnlockedFallacies";
 import LoadingTip from "../components/LoadingTip";
 import { tapScale } from "../lib/motion";
-import { Zap, Flame } from 'lucide-react'
+
 const TOPICS: { key: DebaterContext; ar: string; en: string }[] = [
   { key: "everyday", ar: "عام", en: "Everyday" },
   { key: "political", ar: "سياسي", en: "Political" },
@@ -39,7 +40,7 @@ export default function DebaterChatPage() {
   if (!context) {
     return (
       <div>
-        <h1 className="mb-2 font-heading text-2xl font-bold text-text">
+        <h1 className="mb-2 font-heading text-2xl font-extrabold text-text">
           {lang === "ar" ? "ناظر خصمك" : "Debate the Opponent"}
         </h1>
         <p className="mb-6 text-text-muted">
@@ -50,15 +51,14 @@ export default function DebaterChatPage() {
             <motion.button
               key={t.key}
               whileTap={tapScale}
-              whileHover={{ y: -2 }}
+              whileHover={{ y: -3 }}
               onClick={() => start(t.key)}
-              className="rounded-xl border border-border bg-surface px-5 py-3 text-text hover:bg-bg"
+              className="rounded-2xl border border-border bg-surface px-5 py-3 text-text shadow-sm transition-shadow duration-200 hover:shadow-[var(--shadow-elevated)]"
             >
               {lang === "ar" ? t.ar : t.en}
             </motion.button>
           ))}
         </div>
-        
         <Link
           to="/chat/ai"
           className="mt-8 block text-sm text-brand hover:text-brand-hover"
@@ -80,16 +80,17 @@ export default function DebaterChatPage() {
   return (
     <div className="flex h-[70vh] max-h-[42rem] flex-col">
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="font-heading text-2xl font-bold text-text">
+        <h1 className="font-heading text-2xl font-extrabold text-text">
           {lang === "ar" ? "ناظر خصمك" : "Debate the Opponent"}
         </h1>
         {calloutStreak >= 2 && (
           <motion.span
             initial={{ scale: 0.7, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="text-sm font-medium text-reward"
+            className="flex items-center gap-1 text-sm font-medium text-reward"
           >
-            <Flame size={14} fill="currentColor" strokeWidth={0} /> {calloutStreak}
+            <Flame size={14} fill="currentColor" strokeWidth={0} />{" "}
+            {calloutStreak}
           </motion.span>
         )}
       </div>
@@ -105,7 +106,7 @@ export default function DebaterChatPage() {
             >
               <p
                 className={[
-                  "inline-block max-w-[85%] rounded-lg px-4 py-2",
+                  "inline-block max-w-[85%] rounded-xl px-4 py-2 shadow-sm",
                   turn.speaker === "user"
                     ? "bg-brand text-white"
                     : "border border-border bg-surface text-text",
@@ -126,13 +127,13 @@ export default function DebaterChatPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="mt-4 rounded-xl border border-brand bg-brand/5 p-4"
+            className="mt-4 rounded-2xl border border-brand bg-brand/5 p-4 shadow-[var(--shadow-brand)]"
           >
-            <p className="mb-3 text-sm font-medium text-text">
-              <Zap size={14} className="inline" />
+            <p className="mb-3 flex items-center gap-1.5 text-sm font-medium text-text">
+              <Zap size={14} className="text-brand" />{" "}
               {lang === "ar"
-                ? ` شو المغالطة يلي استخدمها هلق؟`
-                : ` What fallacy did they just use?`}
+                ? "شو المغالطة يلي استخدمها هلق؟"
+                : "What fallacy did they just use?"}
             </p>
             <div className="flex flex-wrap gap-2">
               {fallacies.map((f) => (
@@ -140,7 +141,7 @@ export default function DebaterChatPage() {
                   key={f.slug}
                   whileTap={tapScale}
                   onClick={() => guess(f.slug)}
-                  className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm text-text hover:bg-bg"
+                  className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm text-text shadow-sm hover:bg-bg"
                 >
                   {lang === "ar" ? f.nameAr : f.nameEn}
                 </motion.button>
@@ -175,12 +176,12 @@ export default function DebaterChatPage() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={lang === "ar" ? "ردّك..." : "Your reply..."}
-            className="flex-1 rounded-lg border border-border bg-surface px-4 py-2 text-text outline-none focus:border-brand"
+            className="flex-1 rounded-lg border border-border bg-surface px-4 py-2 text-text shadow-sm outline-none focus:border-brand"
           />
           <motion.button
             whileTap={tapScale}
             type="submit"
-            className="rounded-lg bg-brand px-5 py-2 font-medium text-white hover:bg-brand-hover"
+            className="rounded-lg bg-brand px-5 py-2 font-medium text-white shadow-[var(--shadow-brand)] hover:bg-brand-hover"
           >
             {lang === "ar" ? "إرسال" : "Send"}
           </motion.button>

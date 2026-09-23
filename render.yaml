@@ -1,0 +1,19 @@
+# render.yaml (بجذر المشروع، فوق Frontend وBackend)
+services:
+  - type: web
+    name: fallacies-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false

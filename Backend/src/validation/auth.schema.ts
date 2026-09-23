@@ -10,3 +10,5 @@ export const guestSchema = z.object({
 export const registerSchema = z.object({
   guestId: z.string().min(1).optional(),
 });
+
+export const updateNameSchema = z.object({ displayName: z.string().min(1).max(60) })

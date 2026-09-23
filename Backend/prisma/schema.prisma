@@ -50,7 +50,7 @@ model User {
   supabaseUserId  String?  @unique
   guestId         String?  @unique
   isGuest         Boolean  @default(true)
-  displayName     String
+  displayName     String   @unique
   email           String?
   role            Role     @default(user)
   xp              Int      @default(0)
@@ -200,11 +200,12 @@ model Report {
 }
 
 model Tip {
-  id        String   @id @default(cuid())
-  type      String
-  textAr    String
-  textEn    String
-  fallacyId String?
-  fallacy   Fallacy? @relation(fields: [fallacyId], references: [id])
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  type        String
+  textAr      String
+  textEn      String
+  fallacyId   String?
+  fallacy     Fallacy? @relation(fields: [fallacyId], references: [id])
+  isGenerated Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }

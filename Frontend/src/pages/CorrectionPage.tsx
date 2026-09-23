@@ -2,8 +2,9 @@
 import { useTranslation } from "react-i18next";
 import { useUnlockedFallacies } from "../hooks/useUnlockedFallacies";
 import { useCorrectionSession } from "../hooks/useCorrectionSession";
-import ExampleDisclaimer from "../components/ExampleDisclaimer";
 import LoadingTip from "../components/LoadingTip";
+import { motion } from "framer-motion";
+import { tapScale } from "../lib/motion";
 
 export default function CorrectionPage() {
   const { i18n } = useTranslation();
@@ -24,12 +25,16 @@ export default function CorrectionPage() {
   } = useCorrectionSession(fallacies, lang);
 
   if (error) return <p className="text-flag">{error}</p>;
-  if (isLoading || !question) return <LoadingTip />
+  if (isLoading || !question) return <LoadingTip />;
 
   if (result) {
     return (
-      <div>
-        <h1 className="mb-6 font-heading text-3xl font-bold text-text">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="rounded-2xl border border-border bg-surface p-8 shadow-[var(--shadow-elevated)]"
+      >
+        <h1 className="mb-6 font-heading text-2xl font-extrabold text-text">
           {lang === "ar" ? "نتيجة التصحيح" : "Correction Result"}
         </h1>
         <div className="space-y-2">
@@ -59,13 +64,14 @@ export default function CorrectionPage() {
           </p>
           <p className="text-text-muted">{result.feedback}</p>
         </div>
-        <button
+        <motion.button
+          whileTap={tapScale}
           onClick={loadNext}
-          className="mt-8 rounded-lg bg-brand px-6 py-3 font-medium text-white transition-colors hover:bg-brand-hover"
+          className="mt-8 rounded-lg bg-brand px-6 py-3 font-medium text-white shadow-[var(--shadow-brand)] transition-colors hover:bg-brand-hover"
         >
           {lang === "ar" ? "مثال تاني" : "Another example"}
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     );
   }
 
@@ -74,31 +80,31 @@ export default function CorrectionPage() {
       <h1 className="mb-6 font-heading text-2xl font-bold text-text">
         {lang === "ar" ? "صحّح الجملة" : "Fix the Sentence"}
       </h1>
-      <p className="mb-8 font-heading text-xl font-bold text-text whitespace-pre-line">
-        “{lang === "ar" ? question.text.ar : question.text.en}”
+      <p className="mb-1 whitespace-pre-line font-heading text-xl font-bold text-text">
+        "{lang === "ar" ? question.text.ar : question.text.en}"
       </p>
 
-      <ExampleDisclaimer contextType={question.contextType} />
-
       {!guessedSlug ? (
-        <div>
+        <div className="mt-6">
           <p className="mb-3 text-sm text-text-muted">
             {lang === "ar" ? "شو المغالطة هون؟" : "What fallacy is this?"}
           </p>
           <div className="flex flex-wrap gap-2">
             {fallacies.map((f) => (
-              <button
+              <motion.button
                 key={f.slug}
+                whileTap={tapScale}
+                whileHover={{ y: -2 }}
                 onClick={() => guess(f.slug)}
-                className="rounded-lg border border-border px-3 py-1.5 text-sm text-text hover:bg-surface"
+                className="rounded-xl border border-border bg-surface px-3 py-1.5 text-sm text-text shadow-sm transition-shadow duration-200 hover:shadow-[var(--shadow-elevated)]"
               >
                 {lang === "ar" ? f.nameAr : f.nameEn}
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>
       ) : (
-        <div>
+        <div className="mt-6">
           <label className="mb-2 block text-sm text-text-muted">
             {lang === "ar"
               ? "أعد صياغتها بدون المغالطة:"
@@ -108,12 +114,13 @@ export default function CorrectionPage() {
             value={rewriteText}
             onChange={(e) => setRewriteText(e.target.value)}
             rows={4}
-            className="w-full rounded-lg border border-border bg-surface p-3 text-text outline-none focus:border-brand"
+            className="w-full rounded-xl border border-border bg-surface p-3 text-text shadow-sm outline-none focus:border-brand focus:shadow-[var(--shadow-elevated)]"
           />
-          <button
+          <motion.button
+            whileTap={tapScale}
             onClick={submit}
             disabled={isSubmitting || !rewriteText.trim()}
-            className="mt-4 rounded-lg bg-brand px-6 py-3 font-medium text-white hover:bg-brand-hover disabled:opacity-50"
+            className="mt-4 rounded-lg bg-brand px-6 py-3 font-medium text-white shadow-[var(--shadow-brand)] transition-colors hover:bg-brand-hover disabled:opacity-50 disabled:shadow-none"
           >
             {isSubmitting
               ? lang === "ar"
@@ -122,7 +129,7 @@ export default function CorrectionPage() {
               : lang === "ar"
                 ? "إرسال"
                 : "Submit"}
-          </button>
+          </motion.button>
         </div>
       )}
     </div>
