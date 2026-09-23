@@ -112,7 +112,7 @@ model Quiz {
   id             String   @id @default(cuid())
   userId         String
   idempotencyKey String?  @unique
-  user           User     @relation(fields: [userId], references: [id])
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   mode           QuizMode
   scorePercent   Int
   xpAwarded      Int
@@ -138,7 +138,7 @@ model QuizAnswer {
 model Progress {
   id             String    @id @default(cuid())
   userId         String
-  user           User      @relation(fields: [userId], references: [id])
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   fallacyId      String
   fallacy        Fallacy   @relation(fields: [fallacyId], references: [id])
   timesCorrect   Int       @default(0)
@@ -192,7 +192,7 @@ model DailyQuota {
 model Report {
   id          String   @id @default(cuid())
   reporterId  String
-  reporter    User     @relation(fields: [reporterId], references: [id])
+  reporter    User     @relation(fields: [reporterId], references: [id], onDelete: Cascade)
   contentType String // 'question' | 'debater_message' | 'evaluator_feedback'
   contentText String
   reason      String?
