@@ -10,6 +10,7 @@ import StreakFlame from '../StreakFlame'
 const NAV_LINKS = [
   { to: '/library', ar: 'المكتبة', en: 'Library' },
   { to: '/review', ar: 'المراجعة', en: 'Review' },
+  { to: '/quiz', ar: 'كويز', en: 'Quiz' },
   { to: '/correct', ar: 'صحّح', en: 'Correct' },
   { to: '/chat/debater', ar: 'ناظرني', en: 'Debate' },
   { to: '/chat/ai', ar: 'محادثة AI', en: 'AI Chat' },

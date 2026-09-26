@@ -1,4 +1,4 @@
-// frontend/src/hooks/useQuizSession.ts (استبدله كامل)
+// frontend/src/hooks/useQuizSession.ts (استبدله كامل — موحّد: مغالطة وحدة أو عدة، مع كل ميزات الفاز الغنية)
 import { useEffect, useState } from "react";
 import { apiClient } from "../lib/apiClient";
 import { useAuthStore, applyQuizResult } from "../store/authStore";
@@ -9,6 +9,7 @@ interface LiveQuestion {
   embeddedFallacyId: string;
   difficultyTier: "beginner" | "intermediate" | "advanced";
   contextType?: string;
+  explanation?: { ar: string; en: string } | null;
 }
 interface SubmitResult {
   scorePercent: number;
@@ -19,15 +20,12 @@ interface SubmitResult {
   streakCurrent: number;
   badgeIds: string[];
   newlyUnlockedBadgeIds: string[];
-  weakestFallacyId: string | null;
-  strongestFallacyId: string | null;
   perFallacyBreakdown: Record<string, { correct: number; total: number }>;
 }
 const QUESTIONS_PER_SESSION = 5;
 
-export function useQuizSession(fallacySlug: string) {
+export function useQuizSession(pool: Fallacy[], contexts: string[]) {
   const level = useAuthStore((s) => s.appUser?.level ?? 1);
-  const [fallacyInfo, setFallacyInfo] = useState<Fallacy | null>(null);
   const [round, setRound] = useState(0);
   const [question, setQuestion] = useState<LiveQuestion | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,20 +53,15 @@ export function useQuizSession(fallacySlug: string) {
     combo++;
 
   useEffect(() => {
-    apiClient
-      .get<Fallacy>(`/api/fallacies/${fallacySlug}`)
-      .then((r) => setFallacyInfo(r.data));
-  }, [fallacySlug]);
-
-  useEffect(() => {
-    if (isFinished) return;
+    if (isFinished || pool.length === 0) return;
+    const picked = pool[Math.floor(Math.random() * pool.length)];
+    if (!picked) return;
     let cancelled = false;
-    setIsLoading(true);
-    setError(null);
+    const params: Record<string, string> = { difficulty };
+    if (contexts.length > 0)
+      params.context = contexts[Math.floor(Math.random() * contexts.length)];
     apiClient
-      .get<LiveQuestion>(`/api/questions/${fallacySlug}/next`, {
-        params: { difficulty },
-      })
+      .get<LiveQuestion>(`/api/questions/${picked.slug}/next`, { params })
       .then((res) => {
         if (!cancelled) setQuestion(res.data);
       })
@@ -81,7 +74,8 @@ export function useQuizSession(fallacySlug: string) {
     return () => {
       cancelled = true;
     };
-  }, [round, isFinished, fallacySlug, difficulty]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [round, isFinished, difficulty]);
 
   useEffect(() => {
     if (!isFinished || result) return;
@@ -93,14 +87,14 @@ export function useQuizSession(fallacySlug: string) {
           timeSpentSec: Math.round((Date.now() - startTime) / 1000),
           answers,
         },
-        { headers: { "Idempotency-Key": `${fallacySlug}-${startTime}` } },
+        { headers: { "Idempotency-Key": `quiz-${startTime}` } },
       )
       .then((res) => {
         setResult(res.data);
         applyQuizResult(res.data);
       })
       .catch((err) => setError(err.message));
-  }, [isFinished, result, answers, startTime, fallacySlug]);
+  }, [isFinished, result, answers, startTime]);
 
   function answer(saidSpotted: boolean) {
     if (revealed || !question) return;
@@ -116,7 +110,6 @@ export function useQuizSession(fallacySlug: string) {
       },
     ]);
   }
-
   function markHintUsed() {
     setHintUsedThisQuestion(true);
   }
@@ -133,8 +126,13 @@ export function useQuizSession(fallacySlug: string) {
     setRevealed(false);
     setHintUsedThisQuestion(false);
     setReportSent(false);
+    setIsLoading(true);
     setRound((r) => r + 1);
   }
+
+  const fallacyHint = question
+    ? pool.find((f) => f.id === question.embeddedFallacyId)
+    : undefined;
 
   return {
     question,
@@ -149,8 +147,8 @@ export function useQuizSession(fallacySlug: string) {
     combo,
     answeredCount: round,
     totalQuestions: QUESTIONS_PER_SESSION,
-    fallacyHint: fallacyInfo
-      ? { ar: fallacyInfo.definitionAr, en: fallacyInfo.definitionEn }
+    fallacyHint: fallacyHint
+      ? { ar: fallacyHint.definitionAr, en: fallacyHint.definitionEn }
       : null,
     hintUsedThisQuestion,
     markHintUsed,

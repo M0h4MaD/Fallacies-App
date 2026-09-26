@@ -163,6 +163,8 @@ model GeneratedQuestion {
   contextType    ExampleContext
   textAr         String
   textEn         String
+  explanationAr  String?
+  explanationEn  String?
   createdAt      DateTime       @default(now())
 
   shownTo ShownQuestion[]

@@ -5,24 +5,27 @@ import { useCorrectionSession } from "../hooks/useCorrectionSession";
 import LoadingTip from "../components/LoadingTip";
 import { motion } from "framer-motion";
 import { tapScale } from "../lib/motion";
+import { useFallacies } from "../hooks/useFallacies";
 
 export default function CorrectionPage() {
   const { i18n } = useTranslation();
   const lang = i18n.language === "en" ? "en" : "ar";
-  const { fallacies } = useUnlockedFallacies();
+  const { fallacies: unlockedFallacies } = useUnlockedFallacies();
+  const { fallacies: allFallacies } = useFallacies();
   const {
     question,
     isLoading,
     error,
     guessedSlug,
     guess,
+    guessOptions,
     rewriteText,
     setRewriteText,
     submit,
     isSubmitting,
     result,
     loadNext,
-  } = useCorrectionSession(fallacies, lang);
+  } = useCorrectionSession(unlockedFallacies, allFallacies, lang);
 
   if (error) return <p className="text-flag">{error}</p>;
   if (isLoading || !question) return <LoadingTip />;
@@ -90,7 +93,7 @@ export default function CorrectionPage() {
             {lang === "ar" ? "شو المغالطة هون؟" : "What fallacy is this?"}
           </p>
           <div className="flex flex-wrap gap-2">
-            {fallacies.map((f) => (
+            {guessOptions.map((f) => (
               <motion.button
                 key={f.slug}
                 whileTap={tapScale}

@@ -121,7 +121,7 @@ export default function AiChatPage() {
   }
 
   return (
-    <div className="flex h-[70vh] max-h-[42rem] flex-col">
+    <div>
       <h1 className="mb-1 font-heading text-2xl font-extrabold text-text">
         {fallacySlug
           ? `${lang === "ar" ? "اسأل عن" : "Ask about"}: ${fallacy ? (lang === "ar" ? fallacy.nameAr : fallacy.nameEn) : "..."}`
@@ -137,7 +137,7 @@ export default function AiChatPage() {
         </p>
       )}
 
-      <div className="min-h-0 flex-1 space-y-4 overflow-y-auto pt-3">
+      <div className="mb-4 max-h-[50vh] space-y-4 overflow-y-auto rounded-xl border border-border bg-bg p-4">
         {messages.length === 0 &&
           (fallacySlug ? (
             <div>

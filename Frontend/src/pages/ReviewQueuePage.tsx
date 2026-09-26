@@ -76,8 +76,8 @@ export default function ReviewQueuePage() {
                 </div>
               </div>
               <Link
-                to={`/quiz/${fallacy.slug}`}
-                className="cursor-pointer text-sm font-medium text-brand hover:text-brand-hover"
+                to={`/quiz?fallacy=${fallacy.slug}`}
+                className="text-sm font-medium text-brand hover:text-brand-hover"
               >
                 {lang === "ar" ? "راجع الآن" : "Review now"}
               </Link>

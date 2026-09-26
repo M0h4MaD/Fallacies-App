@@ -35,6 +35,7 @@ export default function AppRouter() {
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/sign-in" element={<SignInPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/quiz" element={<QuizPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

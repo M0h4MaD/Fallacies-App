@@ -18,9 +18,9 @@ import { GoogleGenAI, HarmCategory, HarmBlockThreshold } from '@google/genai'
 
 export const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
-//  httpOptions: {
-//     baseUrl: process.env.GEMINI_PROXY_URL, // 👈 التعديل الصحيح للخيارات
-//   }, // 👈 التعديل هنا لتوجيه الطلبات عبر البروكسي
+ httpOptions: {
+    baseUrl: process.env.GEMINI_PROXY_URL, // 👈 التعديل الصحيح للخيارات
+  }, // 👈 التعديل هنا لتوجيه الطلبات عبر البروكسي
 })
 
 export const GEMINI_MODEL = 'gemini-flash-lite-latest'

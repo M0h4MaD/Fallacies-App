@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Pencil, Check, X, Award, Lock } from "lucide-react";
 import { useAuthStore, updateDisplayName } from "../store/authStore";
 import { BADGE_LABELS } from "../lib/badgeLabels";
+import { isSoundEnabled, setSoundEnabled } from "../lib/sound";
 
 export default function ProfilePage() {
   const { i18n } = useTranslation();
@@ -121,6 +122,20 @@ export default function ProfilePage() {
           );
         })}
       </div>
+      <h2 className="mb-3 mt-10 font-heading text-lg font-bold text-text">
+        {lang === "ar" ? "الإعدادات" : "Settings"}
+      </h2>
+      <label className="flex items-center justify-between rounded-xl border border-border bg-surface p-4 shadow-sm">
+        <span className="text-text">
+          {lang === "ar" ? "الأصوات" : "Sounds"}
+        </span>
+        <input
+          type="checkbox"
+          defaultChecked={isSoundEnabled()}
+          onChange={(e) => setSoundEnabled(e.target.checked)}
+          className="h-5 w-5 accent-brand"
+        />
+      </label>
     </div>
   );
 }

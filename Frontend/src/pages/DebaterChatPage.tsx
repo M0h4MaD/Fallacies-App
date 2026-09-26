@@ -7,8 +7,9 @@ import { Zap, Flame } from "lucide-react";
 import {
   useDebaterSession,
   type DebaterContext,
+  type DebaterDifficulty,
 } from "../hooks/useDebaterSession";
-import { useUnlockedFallacies } from "../hooks/useUnlockedFallacies";
+import { useFallacies } from "../hooks/useFallacies";
 import LoadingTip from "../components/LoadingTip";
 import { tapScale } from "../lib/motion";
 
@@ -18,10 +19,16 @@ const TOPICS: { key: DebaterContext; ar: string; en: string }[] = [
   { key: "religious", ar: "ديني", en: "Religious" },
   { key: "media", ar: "إعلامي", en: "Media" },
 ];
+const DIFFICULTIES: { key: DebaterDifficulty; ar: string; en: string }[] = [
+  { key: "beginner", ar: "مبتدئ", en: "Beginner" },
+  { key: "intermediate", ar: "متوسط", en: "Intermediate" },
+  { key: "advanced", ar: "متقدم", en: "Advanced" },
+];
 
 export default function DebaterChatPage() {
   const { i18n } = useTranslation();
   const lang = i18n.language === "en" ? "en" : "ar";
+  const { fallacies } = useFallacies();
   const {
     context,
     start,
@@ -33,9 +40,11 @@ export default function DebaterChatPage() {
     guess,
     reply,
     canGuess,
-  } = useDebaterSession(lang);
-  const { fallacies } = useUnlockedFallacies();
+    guessOptions,
+  } = useDebaterSession(lang, fallacies);
   const [input, setInput] = useState("");
+  const [selectedDifficulty, setSelectedDifficulty] =
+    useState<DebaterDifficulty>("beginner");
 
   if (!context) {
     return (
@@ -43,25 +52,42 @@ export default function DebaterChatPage() {
         <h1 className="mb-2 font-heading text-2xl font-extrabold text-text">
           {lang === "ar" ? "ناظر خصمك" : "Debate the Opponent"}
         </h1>
-        <p className="mb-6 text-text-muted">
+        <p className="mb-3 text-text-muted">
           {lang === "ar" ? "اختر موضوع النقاش:" : "Choose a topic:"}
         </p>
-        <div className="flex flex-wrap gap-3">
+        <div className="mb-6 flex flex-wrap gap-3">
           {TOPICS.map((t) => (
-            <motion.button
+            <button
               key={t.key}
-              whileTap={tapScale}
-              whileHover={{ y: -3 }}
-              onClick={() => start(t.key)}
-              className="rounded-2xl border border-border bg-surface px-5 py-3 text-text shadow-sm transition-shadow duration-200 hover:shadow-[var(--shadow-elevated)]"
+              onClick={() => start(t.key, selectedDifficulty)}
+              className="rounded-2xl border border-border bg-surface px-5 py-3 text-text shadow-sm hover:shadow-[var(--shadow-elevated)]"
             >
               {lang === "ar" ? t.ar : t.en}
-            </motion.button>
+            </button>
+          ))}
+        </div>
+        <p className="mb-3 text-sm text-text-muted">
+          {lang === "ar" ? "صعوبة المناظرة:" : "Debate difficulty:"}
+        </p>
+        <div className="mb-8 flex gap-2">
+          {DIFFICULTIES.map((d) => (
+            <button
+              key={d.key}
+              onClick={() => setSelectedDifficulty(d.key)}
+              className={[
+                "rounded-full border px-4 py-2 text-sm",
+                selectedDifficulty === d.key
+                  ? "border-brand bg-brand text-white"
+                  : "border-border text-text-muted hover:bg-surface",
+              ].join(" ")}
+            >
+              {lang === "ar" ? d.ar : d.en}
+            </button>
           ))}
         </div>
         <Link
           to="/chat/ai"
-          className="mt-8 block text-sm text-brand hover:text-brand-hover"
+          className="block text-sm text-brand hover:text-brand-hover"
         >
           {lang === "ar"
             ? "أو حلّل نصّك الخاص بدل النقاش →"
@@ -78,7 +104,7 @@ export default function DebaterChatPage() {
   }
 
   return (
-    <div className="flex h-[70vh] max-h-[42rem] flex-col">
+    <div>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="font-heading text-2xl font-extrabold text-text">
           {lang === "ar" ? "ناظر خصمك" : "Debate the Opponent"}
@@ -95,7 +121,7 @@ export default function DebaterChatPage() {
         )}
       </div>
 
-      <div className="min-h-0 flex-1 space-y-4 overflow-y-auto">
+      <div className="mb-4 max-h-[50vh] space-y-4 overflow-y-auto rounded-xl border border-border bg-bg p-4">
         <AnimatePresence initial={false}>
           {history.map((turn, i) => (
             <motion.div
@@ -120,14 +146,13 @@ export default function DebaterChatPage() {
         {isLoading && <LoadingTip />}
       </div>
 
-      {error && <p className="mt-2 text-flag">{error}</p>}
-
+      {error && <p className="mb-2 text-flag">{error}</p>}
       <AnimatePresence>
         {canGuess && !isLoading && (
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="mt-4 rounded-2xl border border-brand bg-brand/5 p-4 shadow-[var(--shadow-brand)]"
+            className="mb-4 rounded-2xl border border-brand bg-brand/5 p-4 shadow-[var(--shadow-brand)]"
           >
             <p className="mb-3 flex items-center gap-1.5 text-sm font-medium text-text">
               <Zap size={14} className="text-brand" />{" "}
@@ -136,7 +161,7 @@ export default function DebaterChatPage() {
                 : "What fallacy did they just use?"}
             </p>
             <div className="flex flex-wrap gap-2">
-              {fallacies.map((f) => (
+              {guessOptions.map((f) => (
                 <motion.button
                   key={f.slug}
                   whileTap={tapScale}
@@ -156,7 +181,7 @@ export default function DebaterChatPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className={[
-            "mt-4",
+            "mb-4",
             guessResult.correct ? "text-brand" : "text-flag",
           ].join(" ")}
         >
@@ -169,9 +194,8 @@ export default function DebaterChatPage() {
               : `Not quite — it was "${fallacies.find((f) => f.slug === guessResult.actualSlug)?.nameEn ?? guessResult.actualSlug}".`}
         </motion.p>
       )}
-
       {guessResult && (
-        <form onSubmit={submitReply} className="mt-4 flex gap-2">
+        <form onSubmit={submitReply} className="flex gap-2">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}

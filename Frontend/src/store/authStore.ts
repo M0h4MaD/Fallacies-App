@@ -3,7 +3,8 @@ import { create } from 'zustand'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../config/supabase'
 import { apiClient } from '../lib/apiClient'
-import { getStoredGuestId, storeGuestId } from '../lib/guestId'
+import { getStoredGuestId, reserveGuestId } from '../lib/guestId'
+
 import type { AppUser } from '../types'
 
 interface AuthState {
@@ -42,17 +43,11 @@ export function initAuthListener() {
   })
 }
 
-// مرة وحدة عند الإقلاع: إذا في guestId محفوظ نجيب بياناتو، وإلا نخلّي السيرفر ينشئ هوية جديدة ونخزّن الـ id يلي يرجّعه.
 export async function bootstrapUser(lang: 'ar' | 'en') {
+  const guestId = reserveGuestId()
   try {
-    if (getStoredGuestId()) {
-      const { data } = await apiClient.get<ApiUserResponse>('/api/auth/me')
-      useAuthStore.setState((s) => (s.session ? s : { ...s, appUser: mapUser(data), isLoading: false }))
-    } else {
-      const { data } = await apiClient.post<ApiUserResponse>('/api/auth/guest', { lang })
-      if (data.guestId) storeGuestId(data.guestId)
-      useAuthStore.setState((s) => (s.session ? s : { ...s, appUser: mapUser(data), isLoading: false }))
-    }
+    const { data } = await apiClient.post<ApiUserResponse>('/api/auth/guest', { guestId, lang })
+    useAuthStore.setState((s) => (s.session ? s : { ...s, appUser: mapUser(data), isLoading: false }))
   } catch {
     useAuthStore.setState((s) => (s.session ? s : { ...s, isLoading: false }))
   }

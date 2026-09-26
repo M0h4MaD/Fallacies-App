@@ -4,7 +4,7 @@
 import { prisma } from "../config/prisma.js";
 import { generateQuestionBatch } from "./questionGenerator.js";
 import { AppError } from "../middleware/errorHandler.js";
-import type { Difficulty, QuizMode } from "@prisma/client";
+import type { Difficulty, ExampleContext, QuizMode } from "@prisma/client";
 
 const REFILL_THRESHOLD = 5;
 const REFILL_BATCH_SIZE = 3;
@@ -15,7 +15,14 @@ export async function getPooledQuestion(
   fallacyId: string,
   difficultyTier: Difficulty,
   mode: QuizMode,
+  contextType?: ExampleContext,
 ) {
+  const baseWhere = {
+    fallacyId,
+    difficultyTier,
+    mode,
+    ...(contextType ? { contextType } : {}),
+  };
   const recentlyShownIds = (
     await prisma.shownQuestion.findMany({
       where: { userId, question: { fallacyId, difficultyTier, mode } },
@@ -26,20 +33,23 @@ export async function getPooledQuestion(
   ).map((s) => s.questionId);
 
   let candidates = await prisma.generatedQuestion.findMany({
-    where: { fallacyId, difficultyTier, mode, id: { notIn: recentlyShownIds } },
+    where: { ...baseWhere, id: { notIn: recentlyShownIds } },
   });
   if (candidates.length === 0)
+    candidates = await prisma.generatedQuestion.findMany({ where: baseWhere });
+  if (candidates.length === 0 && contextType) {
+    // ما في أسئلة بهالموضوع تحديداً لهالمغالطة لسا — تراجع لأي موضوع بدل خطأ فوري
     candidates = await prisma.generatedQuestion.findMany({
-      where: { fallacyId, difficultyTier, mode },
-    });
-  if (candidates.length === 0) {
-    // fallback: أي صعوبة لنفس المغالطة/النمط، أفضل من خطأ فوري لحد ما تكتمل التعبئة
-    candidates = await prisma.generatedQuestion.findMany({
-      where: { fallacyId, mode, id: { notIn: recentlyShownIds } },
+      where: {
+        fallacyId,
+        difficultyTier,
+        mode,
+        id: { notIn: recentlyShownIds },
+      },
     });
     if (candidates.length === 0)
       candidates = await prisma.generatedQuestion.findMany({
-        where: { fallacyId, mode },
+        where: { fallacyId, difficultyTier, mode },
       });
   }
   if (candidates.length === 0)

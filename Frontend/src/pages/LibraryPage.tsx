@@ -1,4 +1,4 @@
-// frontend/src/pages/LibraryPage.tsx (استبدله كامل)
+// frontend/src/pages/LibraryPage.tsx
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -105,13 +105,7 @@ function ResultsList({ items, lang }: { items: Fallacy[]; lang: "ar" | "en" }) {
             <p className="mt-2 max-w-prose text-text">
               {lang === "ar" ? f.definitionAr : f.definitionEn}
             </p>
-            <div className="mt-2 flex items-center gap-4">
-              <Link
-                to={`/quiz/${f.slug}`}
-                className="text-sm font-medium text-brand hover:text-brand-hover"
-              >
-                {lang === "ar" ? "تمرّن" : "Practice"}
-              </Link>
+            <div className="mt-2">
               <Link
                 to={`/chat/ai/${f.slug}`}
                 className="text-sm font-medium text-brand hover:text-brand-hover"
@@ -143,12 +137,21 @@ export default function LibraryPage() {
   );
   const [sortBy, setSortBy] = useState<"commonness" | "alpha">("commonness");
 
-  const bySection = SECTION_ORDER.map((sc) => ({
-    sc,
-    items:
-      sc === "all" ? fallacies : fallacies.filter((f) => f.subCategory === sc),
-  }));
-  const active = bySection.find((s) => s.sc === openSection);
+  const bySection = useMemo(
+    () =>
+      SECTION_ORDER.map((sc) => ({
+        sc,
+        items:
+          sc === "all"
+            ? fallacies
+            : fallacies.filter((f) => f.subCategory === sc),
+      })),
+    [fallacies],
+  );
+  const active = useMemo(
+    () => bySection.find((s) => s.sc === openSection),
+    [bySection, openSection],
+  );
 
   const sectionResults = useMemo(() => {
     if (!active) return [];

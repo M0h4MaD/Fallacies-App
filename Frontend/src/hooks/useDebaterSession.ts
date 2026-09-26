@@ -1,6 +1,8 @@
 // frontend/src/hooks/useDebaterSession.ts (استبدله كامل)
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { apiClient } from "../lib/apiClient";
+import { pickGuessOptions } from "../lib/pickGuessOptions";
+import type { Fallacy } from "../types";
 
 interface Turn {
   speaker: "user" | "opponent";
@@ -11,10 +13,13 @@ interface DebaterResponse {
   fallacyUsedSlug: string;
 }
 export type DebaterContext = "political" | "religious" | "media" | "everyday";
+export type DebaterDifficulty = "beginner" | "intermediate" | "advanced";
 
-export function useDebaterSession(lang: "ar" | "en") {
+export function useDebaterSession(lang: "ar" | "en", allFallacies: Fallacy[]) {
   const [context, setContext] = useState<DebaterContext | null>(null);
+  const [difficulty, setDifficulty] = useState<DebaterDifficulty>("beginner");
   const [history, setHistory] = useState<Turn[]>([]);
+  const [usedSlugs, setUsedSlugs] = useState<string[]>([]);
   const [hiddenFallacySlug, setHiddenFallacySlug] = useState<string | null>(
     null,
   );
@@ -26,7 +31,20 @@ export function useDebaterSession(lang: "ar" | "en") {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  function fetchOpponentTurn(currentHistory: Turn[], ctx: DebaterContext) {
+  const guessOptions = useMemo(
+    () =>
+      hiddenFallacySlug
+        ? pickGuessOptions(allFallacies, hiddenFallacySlug)
+        : [],
+    [hiddenFallacySlug, allFallacies],
+  );
+
+  function fetchOpponentTurn(
+    currentHistory: Turn[],
+    ctx: DebaterContext,
+    diff: DebaterDifficulty,
+    used: string[],
+  ) {
     setIsLoading(true);
     setError(null);
     apiClient
@@ -34,6 +52,8 @@ export function useDebaterSession(lang: "ar" | "en") {
         history: currentHistory,
         lang,
         preferredContext: ctx,
+        difficulty: diff,
+        usedFallacySlugs: used,
       })
       .then((res) => {
         setHistory((h) => [
@@ -41,15 +61,17 @@ export function useDebaterSession(lang: "ar" | "en") {
           { speaker: "opponent", text: res.data.message },
         ]);
         setHiddenFallacySlug(res.data.fallacyUsedSlug);
+        setUsedSlugs((prev) => [...prev, res.data.fallacyUsedSlug]);
         setGuessResult(null);
       })
       .catch((err) => setError(err.message))
       .finally(() => setIsLoading(false));
   }
 
-  function start(ctx: DebaterContext) {
+  function start(ctx: DebaterContext, diff: DebaterDifficulty) {
     setContext(ctx);
-    fetchOpponentTurn([], ctx);
+    setDifficulty(diff);
+    fetchOpponentTurn([], ctx, diff, []);
   }
 
   function guess(slug: string) {
@@ -62,8 +84,8 @@ export function useDebaterSession(lang: "ar" | "en") {
   function reply(text: string) {
     if (!text.trim() || isLoading || !context) return;
     const next = [...history, { speaker: "user" as const, text }];
-    setHistory(next); // فوراً — قبل أي انتظار
-    fetchOpponentTurn(next, context);
+    setHistory(next);
+    fetchOpponentTurn(next, context, difficulty, usedSlugs);
   }
 
   return {
@@ -77,5 +99,6 @@ export function useDebaterSession(lang: "ar" | "en") {
     guess,
     reply,
     canGuess: hiddenFallacySlug !== null && !guessResult,
+    guessOptions,
   };
 }

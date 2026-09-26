@@ -15,5 +15,5 @@
     "skipLibCheck": true,
     "sourceMap": true
   },
-  "include": ["src"]
+  "include": ["src", "../Frontend/src/lib/sound.ts"]
 }
