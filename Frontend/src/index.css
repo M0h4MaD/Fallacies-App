@@ -77,3 +77,4 @@ body {
 }
 
 button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
+html, body { overflow-x: hidden; }

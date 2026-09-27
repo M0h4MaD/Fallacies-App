@@ -219,7 +219,7 @@ export default function AiChatPage() {
                 ? "الصق نص هون..."
                 : "Paste text here..."
           }
-          className="flex-1 rounded-lg border border-border bg-surface px-4 py-2 text-text shadow-sm outline-none focus:border-brand"
+          className="min-w-0 flex-1 rounded-lg border border-border bg-surface px-4 py-2 text-text shadow-sm outline-none focus:border-brand"
         />
         <motion.button
           whileTap={tapScale}
