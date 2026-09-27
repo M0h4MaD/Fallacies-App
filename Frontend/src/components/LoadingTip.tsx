@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "../lib/apiClient";
+import BrandMark from './BrandMark'
+
 
 interface Tip {
   textAr: string;
@@ -48,11 +50,13 @@ export default function LoadingTip({ fallacySlug }: { fallacySlug?: string }) {
   }, [visible, fallacySlug]);
 
   return (
+    
     <div
       className="flex flex-col items-center gap-3 py-8 text-center"
       role="status"
       aria-live="polite"
     >
+      <BrandMark size={28} className="text-brand opacity-60" />
       <div className="flex gap-1">
         {[0, 1, 2].map((i) => (
           <motion.span

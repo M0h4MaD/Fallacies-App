@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import FallacySpotter from "../components/home/FallacySpotter";
 import FallacyPrimer from "../components/home/FallacyPrimer";
 import WhyItMatters from "../components/home/WhyItMatters";
+import FallacyOfTheDay from "../components/home/FallacyOfTheDay";
 
 const container = {
   hidden: {},
@@ -45,6 +46,9 @@ export default function HomePage() {
           </Link>
         </motion.div>
       </motion.section>
+      <motion.div variants={item}>
+        <FallacyOfTheDay />
+      </motion.div>
       <motion.div variants={item}>
         <WhyItMatters />
       </motion.div>

@@ -14,6 +14,9 @@ import {
 import { useFallacies } from "../hooks/useFallacies";
 import LoadingTip from "../components/LoadingTip";
 import type { Difficulty, Fallacy, FallacySubCategory } from "../types";
+import { Lock } from "lucide-react";
+import { useAuthStore } from "../store/authStore";
+import { buildUnlockLevelMap } from "../lib/unlockLevel";
 
 type SectionKey = FallacySubCategory | "all";
 const SECTION_ORDER: SectionKey[] = [
@@ -75,60 +78,45 @@ const itemVariants = {
   show: { opacity: 1, y: 0 },
 };
 
-function ResultsList({ items, lang }: { items: Fallacy[]; lang: "ar" | "en" }) {
-  if (items.length === 0)
-    return (
-      <p className="text-text-muted">
-        {lang === "ar" ? "ولا نتيجة مطابقة." : "No matching results."}
-      </p>
-    );
+function ResultsList({ items, lang, unlockLevelMap, userLevel }: { items: Fallacy[]; lang: 'ar' | 'en'; unlockLevelMap: Map<string, number>; userLevel: number }) {
+  if (items.length === 0) return <p className="text-text-muted">{lang === 'ar' ? 'ولا نتيجة مطابقة.' : 'No matching results.'}</p>
   return (
-    <motion.div
-      variants={listVariants}
-      initial="hidden"
-      animate="show"
-      className="divide-y divide-border border-t border-border"
-    >
-      {items.map((f) => (
-        <motion.article
-          key={f.slug}
-          variants={itemVariants}
-          className="flex items-baseline justify-between gap-4 py-5 transition-colors hover:bg-surface"
-        >
-          <div>
-            <h3 className="font-heading text-xl font-bold text-text">
-              {lang === "ar" ? f.nameAr : f.nameEn}
-            </h3>
-            <p className="mt-1 text-sm text-text-muted">
-              {lang === "ar" ? f.nameEn : f.nameAr}
-            </p>
-            <p className="mt-2 max-w-prose text-text">
-              {lang === "ar" ? f.definitionAr : f.definitionEn}
-            </p>
-            <div className="mt-2">
-              <Link
-                to={`/chat/ai/${f.slug}`}
-                className="text-sm font-medium text-brand hover:text-brand-hover"
-              >
-                {lang === "ar" ? "اشرحلي" : "Explain"}
-              </Link>
+    <motion.div variants={listVariants} initial="hidden" animate="show" className="divide-y divide-border border-t border-border">
+      {items.map((f) => {
+        const unlockLevel = unlockLevelMap.get(f.slug) ?? 1
+        const isLocked = unlockLevel > userLevel
+        return (
+          <motion.article key={f.slug} variants={itemVariants} className="flex items-baseline justify-between gap-4 py-5 transition-colors hover:bg-surface">
+            <div>
+              <h3 className="font-heading text-xl font-bold text-text">{lang === 'ar' ? f.nameAr : f.nameEn}</h3>
+              <p className="mt-1 text-sm text-text-muted">{lang === 'ar' ? f.nameEn : f.nameAr}</p>
+              <p className="mt-2 max-w-prose text-text">{lang === 'ar' ? f.definitionAr : f.definitionEn}</p>
+              <div className="mt-2 flex items-center gap-4">
+                <Link to={`/chat/ai/${f.slug}`} className="text-sm font-medium text-brand hover:text-brand-hover">{lang === 'ar' ? 'اشرحلي' : 'Explain'}</Link>
+                {isLocked && (
+                  <span className="flex items-center gap-1 text-sm text-text-muted"><Lock size={13} /> {lang === 'ar' ? `تمرين بمستوى ${unlockLevel}` : `Practice at level ${unlockLevel}`}</span>
+                )}
+              </div>
             </div>
-          </div>
-          <div className="flex shrink-0 flex-col items-end gap-2">
-            <span className="text-sm text-text-muted">
-              {difficultyLabel[f.difficulty][lang]}
-            </span>
-            <CommonnessMeter value={f.commonness} />
-          </div>
-        </motion.article>
-      ))}
+            <div className="flex shrink-0 flex-col items-end gap-2">
+              <span className="text-sm text-text-muted">{difficultyLabel[f.difficulty][lang]}</span>
+              <CommonnessMeter value={f.commonness} />
+            </div>
+          </motion.article>
+        )
+      })}
     </motion.div>
-  );
+  )
 }
 
 export default function LibraryPage() {
   const { i18n } = useTranslation();
   const { fallacies, isLoading, error } = useFallacies();
+  const userLevel = useAuthStore((s) => s.appUser?.level ?? 1);
+  const unlockLevelMap = useMemo(
+    () => buildUnlockLevelMap(fallacies.map((f) => f.slug)),
+    [fallacies],
+  );
   const lang = i18n.language === "en" ? "en" : "ar";
   const [openSection, setOpenSection] = useState<SectionKey | null>(null);
   const [query, setQuery] = useState("");
@@ -353,7 +341,12 @@ export default function LibraryPage() {
               </button>
             </div>
 
-            <ResultsList items={sectionResults} lang={lang} />
+            <ResultsList
+              items={sectionResults}
+              lang={lang}
+              unlockLevelMap={unlockLevelMap}
+              userLevel={userLevel}
+            />
           </motion.div>
         )}
       </AnimatePresence>

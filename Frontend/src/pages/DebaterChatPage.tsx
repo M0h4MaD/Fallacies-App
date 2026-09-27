@@ -121,7 +121,7 @@ export default function DebaterChatPage() {
         )}
       </div>
 
-      <div className="mb-4 max-h-[50vh] space-y-4 overflow-y-auto rounded-xl border border-border bg-bg p-4">
+      <div className="mb-4 min-h-[40vh] max-h-[55vh] space-y-4 overflow-y-auto rounded-xl border border-border bg-bg p-4">
         <AnimatePresence initial={false}>
           {history.map((turn, i) => (
             <motion.div

@@ -137,7 +137,7 @@ export default function AiChatPage() {
         </p>
       )}
 
-      <div className="mb-4 max-h-[50vh] space-y-4 overflow-y-auto rounded-xl border border-border bg-bg p-4">
+      <div className="mb-4 min-h-[40vh] max-h-[55vh] space-y-4 overflow-y-auto rounded-xl border border-border bg-bg p-4">
         {messages.length === 0 &&
           (fallacySlug ? (
             <div>

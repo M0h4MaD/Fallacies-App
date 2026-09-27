@@ -2,9 +2,10 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { PartyPopper, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import { useReviewQueue } from "../hooks/useReviewQueue";
 import LoadingTip from "../components/LoadingTip";
+import BrandMark from "../components/BrandMark";
 
 const listVariants = {
   hidden: {},
@@ -39,7 +40,7 @@ export default function ReviewQueuePage() {
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center gap-3 rounded-xl border border-border bg-surface py-14 text-center shadow-[var(--shadow-elevated)]"
         >
-          <PartyPopper size={32} className="text-reward" strokeWidth={1.75} />
+          <BrandMark size={32} className="text-brand" />
           <p className="font-heading text-lg font-bold text-text">
             {lang === "ar" ? "كلشي محدّث!" : "You're all caught up!"}
           </p>
