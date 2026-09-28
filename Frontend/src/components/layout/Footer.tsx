@@ -1,41 +1,103 @@
 // frontend/src/components/layout/Footer.tsx (استبدله كامل)
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Github, ArrowUp, Share2, Check } from 'lucide-react'
+import BrandMark from '../BrandMark'
+
+const EXPLORE = [
+  { to: '/library', ar: 'المكتبة', en: 'Library' },
+  { to: '/quiz', ar: 'كويز', en: 'Quiz' },
+  { to: '/correct', ar: 'صحّح', en: 'Correct' },
+  { to: '/chat/debater', ar: 'ناظرني', en: 'Debate' },
+  { to: '/chat/ai', ar: 'محادثة AI', en: 'AI Chat' },
+]
+const MORE = [
+  { to: '/about', ar: 'عن الموقع والخصوصية', en: 'About & Privacy' },
+  { to: '/support', ar: 'ادعم الموقع', en: 'Support the site' },
+]
+const linkBase = 'py-1 text-sm text-text-muted transition-colors hover:text-text'
+const pillBase = 'flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs text-text-muted transition-colors hover:bg-bg hover:text-text'
 
 export default function Footer() {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const lang = i18n.language === 'en' ? 'en' : 'ar'
-  
+  const [copied, setCopied] = useState(false)
+
+  function scrollToTop() {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' })
+  }
+
+  async function share() {
+    const data = {
+      title: t('app.title'),
+      text: lang === 'ar' ? 'تعلّم تكتشف المغالطات المنطقية — بمنطق، مش بجدل.' : 'Learn to spot logical fallacies — with logic, not arguments.',
+      url: window.location.origin,
+    }
+    if (navigator.share) {
+      try { await navigator.share(data) } catch { /* المستخدم سكّر النافذة */ }
+      return
+    }
+    await navigator.clipboard.writeText(data.url)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
   return (
-    <footer className="border-t border-border py-6 text-center text-sm text-text-muted">
-      <div className="flex flex-wrap items-center justify-center gap-6">
-        <Link to="/about" className="hover:text-text">{lang === 'ar' ? 'عن الموقع والخصوصية' : 'About & Privacy'}</Link>
-        <Link to="/support" className="hover:text-text">{lang === 'ar' ? 'ادعم الموقع' : 'Support'}</Link>
-        <a 
-          href="https://github.com/M0h4MaD" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="flex items-center gap-1.5 hover:text-text"
-        >
-          {/* GitHub SVG Icon */}
-          <svg 
-            width="14" 
-            height="14" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            className="lucide lucide-github"
-          >
-            <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
-            <path d="M9 18c-4.51 2-5-2-7-2"></path>
-          </svg>
-          M0h4MaD
-        </a>
+    // pb هون هي مساحة الـ BottomNav الثابت على الموبايل، مش على المحتوى.
+    <footer className="border-t border-border bg-surface pb-[calc(5rem_+_env(safe-area-inset-bottom))] sm:pb-0">
+      <div className="mx-auto max-w-5xl px-6 py-10">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-[1.4fr_1fr_1fr] sm:gap-10">
+          <div className="col-span-2 sm:col-span-1">
+            <Link to="/" className="inline-flex items-center gap-2 font-heading text-xl font-bold text-brand">
+              <BrandMark size={26} /> {t('app.title')}
+            </Link>
+            <p className="mt-3 max-w-xs text-sm text-text-muted">
+              {lang === 'ar' ? 'تعلّم تكتشف المغالطات المنطقية بالسياسة والدين والإعلام — بمنطق، مش بجدل.' : 'Learn to spot logical fallacies in politics, religion, and media — with logic, not arguments.'}
+            </p>
+          </div>
+
+          <nav aria-label={lang === 'ar' ? 'استكشف' : 'Explore'}>
+            <h2 className="mb-2 text-sm font-semibold text-text">{lang === 'ar' ? 'استكشف' : 'Explore'}</h2>
+            <ul>
+              {EXPLORE.map((l) => (
+                <li key={l.to}><Link to={l.to} className={`inline-block ${linkBase}`}>{lang === 'ar' ? l.ar : l.en}</Link></li>
+              ))}
+            </ul>
+          </nav>
+
+          <nav aria-label={lang === 'ar' ? 'المزيد' : 'More'}>
+            <h2 className="mb-2 text-sm font-semibold text-text">{lang === 'ar' ? 'المزيد' : 'More'}</h2>
+            <ul>
+              {MORE.map((l) => (
+                <li key={l.to}><Link to={l.to} className={`inline-block ${linkBase}`}>{lang === 'ar' ? l.ar : l.en}</Link></li>
+              ))}
+              <li>
+                <a href="https://github.com/M0h4MaD" target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-1.5 ${linkBase}`}>
+                  <Github size={14} /> M0h4MaD
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+        <div className="mt-8 flex flex-col items-center gap-4 border-t border-border pt-6 text-center sm:flex-row sm:justify-between sm:text-start">
+          <div className="space-y-1 text-xs text-text-muted">
+            <p>© {new Date().getFullYear()} {lang === 'ar' ? 'مغالطة. كل الحقوق محفوظة.' : 'Mughalata. All rights reserved.'}</p>
+            <p>{lang === 'ar' ? 'الأمثلة المولّدة بالذكاء الاصطناعي للتدريب التعليمي فقط.' : 'AI-generated examples are for educational practice only.'}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button onClick={share} className={pillBase}>
+              {copied ? <Check size={13} className="text-brand" /> : <Share2 size={13} />}
+              {copied ? (lang === 'ar' ? 'اننسخ الرابط' : 'Link copied') : (lang === 'ar' ? 'شارك الموقع' : 'Share')}
+            </button>
+            <button onClick={scrollToTop} className={pillBase}>
+              <ArrowUp size={13} /> {lang === 'ar' ? 'للأعلى' : 'Top'}
+            </button>
+          </div>
+        </div>
       </div>
-      <p className="mt-4 text-xs">© {new Date().getFullYear()} {lang === 'ar' ? 'مغالطة. كل الحقوق محفوظة.' : 'Mughalata. All rights reserved.'}</p>
     </footer>
   )
 }
