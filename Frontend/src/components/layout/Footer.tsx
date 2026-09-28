@@ -2,8 +2,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Github, ArrowUp, Share2, Check } from 'lucide-react'
+import { ArrowUp, Share2, Check } from 'lucide-react'
 import BrandMark from '../BrandMark'
+import { Github } from '../GithubIcon'
 
 const EXPLORE = [
   { to: '/library', ar: 'المكتبة', en: 'Library' },
@@ -75,7 +76,7 @@ export default function Footer() {
               ))}
               <li>
                 <a href="https://github.com/M0h4MaD" target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-1.5 ${linkBase}`}>
-                  <Github size={14} /> M0h4MaD
+                  <Github  /> M0h4MaD
                 </a>
               </li>
             </ul>
