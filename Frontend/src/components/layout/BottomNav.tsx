@@ -12,6 +12,7 @@ import {
   Trophy,
   User,
   ShieldCheck,
+  RotateCcw,
 } from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
 
@@ -33,6 +34,7 @@ export default function BottomNav() {
   const [prevPath, setPrevPath] = useState(location.pathname);
 
   const moreItems = [
+    { to: "/review", Icon: RotateCcw, labelAr: "المراجعة", labelEn: "Review" },
     {
       to: "/leaderboard",
       Icon: Trophy,

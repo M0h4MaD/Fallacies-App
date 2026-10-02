@@ -24,6 +24,7 @@ export default function CorrectionPage() {
     submit,
     isSubmitting,
     result,
+    xpResult,
     loadNext,
   } = useCorrectionSession(unlockedFallacies, allFallacies, lang);
 
@@ -74,6 +75,16 @@ export default function CorrectionPage() {
         >
           {lang === "ar" ? "مثال تاني" : "Another example"}
         </motion.button>
+        {xpResult && (
+          <p className="mt-3 text-sm text-reward">
+            +{xpResult.xpAwarded} {lang === "ar" ? "نقطة خبرة" : "XP"}
+            {xpResult.newLevel > xpResult.previousLevel
+              ? lang === "ar"
+                ? ` · مستوى ${xpResult.newLevel}! 🎉`
+                : ` · Level ${xpResult.newLevel}! 🎉`
+              : ""}
+          </p>
+        )}
       </motion.div>
     );
   }
