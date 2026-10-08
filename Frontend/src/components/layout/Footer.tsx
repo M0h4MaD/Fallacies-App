@@ -15,7 +15,6 @@ const EXPLORE = [
 ]
 const MORE = [
   { to: '/about', ar: 'عن الموقع والخصوصية', en: 'About & Privacy' },
-  { to: '/support', ar: 'ادعم الموقع', en: 'Support the site' },
 ]
 const linkBase = 'py-1 text-sm text-text-muted transition-colors hover:text-text'
 const pillBase = 'flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs text-text-muted transition-colors hover:bg-bg hover:text-text'

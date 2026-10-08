@@ -14,7 +14,7 @@ import AdminPage from "../pages/AdminPage";
 import SignInPage from "../pages/SignInPage";
 import AboutPage from "../pages/AboutPage";
 import AiChatPage from "../pages/AiChatPage";
-import SupportPage from "../pages/SupportPage";
+
 
 export default function AppRouter() {
   return (
@@ -25,7 +25,6 @@ export default function AppRouter() {
           <Route path="/library" element={<LibraryPage />} />
           <Route path="/quiz/:fallacySlug?" element={<QuizPage />} />
           <Route path="/review" element={<ReviewQueuePage />} />
-          <Route path="/support" element={<SupportPage />} />
           <Route path="/chat/debater" element={<DebaterChatPage />} />
           <Route path="/chat/ai/:fallacySlug?" element={<AiChatPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
