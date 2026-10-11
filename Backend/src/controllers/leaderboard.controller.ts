@@ -1,8 +1,6 @@
-// backend/src/controllers/leaderboard.controller.ts (ملف جديد)
 import type { Request, Response } from 'express'
 import { prisma } from '../config/prisma.js'
 
-// In-memory TTL cache — no Redis on the free tier, and a leaderboard doesn't need per-request freshness.
 let cache: { data: unknown[]; expiresAt: number } | null = null
 const TTL_MS = 60_000
 

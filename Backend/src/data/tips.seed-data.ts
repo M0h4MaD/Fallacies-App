@@ -1,4 +1,3 @@
-// backend/src/data/tips.seed-data.ts (ملف جديد)
 export interface TipDraft { type: string; textAr: string; textEn: string; fallacySlug?: string }
 
 export const tipsDraft: TipDraft[] = [

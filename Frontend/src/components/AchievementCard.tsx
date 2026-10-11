@@ -1,4 +1,3 @@
-// frontend/src/components/AchievementCard.tsx (ملف جديد)
 import { useEffect, useRef } from "react";
 import { Download } from "lucide-react";
 import { motion } from "framer-motion";
@@ -86,7 +85,7 @@ export default function AchievementCard({
 
   useEffect(() => {
     draw();
-  }, [titleAr, titleEn, lang]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [titleAr, titleEn, lang]);
 
   function roundRect(
     ctx: CanvasRenderingContext2D,

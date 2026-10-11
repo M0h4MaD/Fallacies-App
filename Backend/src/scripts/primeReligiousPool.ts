@@ -1,4 +1,3 @@
-// backend/src/scripts/primeReligiousPool.ts (ملف جديد)
 import 'dotenv/config'
 import { prisma } from '../config/prisma.js'
 import { generateQuestionBatch } from '../services/questionGenerator.js'

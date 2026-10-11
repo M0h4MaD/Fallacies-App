@@ -1,4 +1,3 @@
-// backend/src/scripts/primeQuestionPool.ts (استبدله كامل)
 import "dotenv/config";
 import { prisma } from "../config/prisma.js";
 import { generateQuestionBatch } from "../services/questionGenerator.js";

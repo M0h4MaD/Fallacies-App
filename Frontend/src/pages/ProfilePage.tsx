@@ -1,4 +1,3 @@
-// frontend/src/pages/ProfilePage.tsx (استبدله كامل)
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pencil, Check, X, Award, Lock } from "lucide-react";

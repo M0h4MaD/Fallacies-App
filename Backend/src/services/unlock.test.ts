@@ -1,4 +1,3 @@
-// backend/src/services/unlock.test.ts (ملف جديد)
 import { describe, it, expect } from 'vitest'
 import { unlockedFallacyCount } from './unlock.js'
 

@@ -1,6 +1,3 @@
-// frontend/src/components/LoadingTip.tsx (ملف جديد)
-// كل شاشة انتظار AI بتستخدمها (بدل نص "عم نحضّر..." ثابت). بلاش تظهر أول 400ms (تفادي وميض
-// باستجابة سريعة)، وبعدها تلميح دوّار من /api/tips/random كل 6 ثواني.
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";

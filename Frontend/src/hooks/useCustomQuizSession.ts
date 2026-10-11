@@ -1,4 +1,3 @@
-// frontend/src/hooks/useCustomQuizSession.ts (ملف جديد)
 import { useEffect, useState } from 'react'
 import { apiClient } from '../lib/apiClient'
 import { useAuthStore, applyQuizResult } from '../store/authStore'
@@ -38,7 +37,6 @@ export function useCustomQuizSession(contexts: string[], unlockedFallacies: Fall
       .catch((err) => { if (!cancelled) setError(err.message) })
       .finally(() => { if (!cancelled) setIsLoading(false) })
     return () => { cancelled = true }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [round, isFinished, difficulty])
 
   useEffect(() => {

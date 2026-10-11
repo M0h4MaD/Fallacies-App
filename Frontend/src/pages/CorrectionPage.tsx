@@ -1,4 +1,3 @@
-// frontend/src/pages/CorrectionPage.tsx (استبدله كامل)
 import { useTranslation } from "react-i18next";
 import { useUnlockedFallacies } from "../hooks/useUnlockedFallacies";
 import { useCorrectionSession } from "../hooks/useCorrectionSession";

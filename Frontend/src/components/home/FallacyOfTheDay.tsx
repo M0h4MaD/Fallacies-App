@@ -1,4 +1,3 @@
-// frontend/src/components/home/FallacyOfTheDay.tsx (ملف جديد)
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Calendar } from 'lucide-react'

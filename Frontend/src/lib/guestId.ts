@@ -1,4 +1,3 @@
-// frontend/src/lib/guestId.ts (استبدله كامل)
 const STORAGE_KEY = "guestId";
 
 export function reserveGuestId(): string {

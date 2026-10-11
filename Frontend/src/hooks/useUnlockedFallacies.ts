@@ -1,4 +1,3 @@
-// frontend/src/hooks/useUnlockedFallacies.ts (استبدله كامل — كان بدون معالجة خطأ إطلاقاً، فالفشل كان صامت)
 import { useEffect, useState } from 'react'
 import { apiClient } from '../lib/apiClient'
 import type { Fallacy } from '../types'

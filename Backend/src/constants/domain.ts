@@ -1,5 +1,3 @@
-// backend/src/constants/domain.ts (ملف جديد)
-// Shared enum lists so category/difficulty/etc. can't drift out of sync across schemas.
 export const DIFFICULTIES = ['beginner', 'intermediate', 'advanced'] as const
 export const FALLACY_CATEGORIES = ['formal', 'informal'] as const
 export const FALLACY_SUBCATEGORIES = ['relevance', 'ambiguity', 'presumption', 'weak-induction'] as const

@@ -1,4 +1,3 @@
-// backend/src/services/debater.ts (استبدله كامل)
 import { z } from "zod";
 import { callGemini } from "./geminiCall.js";
 import { wrapUserText } from "./promptSafety.js";
@@ -52,7 +51,7 @@ export async function generateDebaterTurn(
   let candidateFallacies = availableFallacies.filter(
     (f) => !usedFallacySlugs.includes(f.slug),
   );
-  if (candidateFallacies.length === 0) candidateFallacies = availableFallacies; // كلهن استخدموا — إعادة سماح بدل توقف
+  if (candidateFallacies.length === 0) candidateFallacies = availableFallacies;
 
   const fallacyList = candidateFallacies
     .map((f) => `- ${f.slug}: ${f.nameEn} (${f.definitionEn})`)

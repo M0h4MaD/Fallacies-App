@@ -1,4 +1,3 @@
-// backend/src/controllers/questions.controller.ts (استبدله كامل)
 import type { Response } from 'express'
 import { prisma } from '../config/prisma.js'
 import type { IdentifiedRequest } from '../middleware/identify.js'

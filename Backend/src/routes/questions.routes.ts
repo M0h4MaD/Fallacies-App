@@ -1,4 +1,3 @@
-// backend/src/routes/questions.routes.ts (ملف جديد)
 import { Router } from 'express'
 import rateLimit from 'express-rate-limit'
 import { asyncHandler } from '../middleware/asyncHandler.js'

@@ -1,4 +1,3 @@
-// backend/src/controllers/report.controller.ts (ملف جديد)
 import type { Response } from 'express'
 import { prisma } from '../config/prisma.js'
 import type { IdentifiedRequest } from '../middleware/identify.js'

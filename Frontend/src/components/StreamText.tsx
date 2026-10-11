@@ -1,5 +1,3 @@
-// frontend/src/components/StreamText.tsx (ملف جديد)
-// إحساس "بث حي" بدون بث حقيقي من الباك اند — كشف تدريجي كلمة كلمة بعد ما يوصل الرد كامل.
 import { useEffect, useState } from 'react'
 
 export default function StreamText({ text }: { text: string }) {

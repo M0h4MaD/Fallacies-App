@@ -1,4 +1,3 @@
-// frontend/src/pages/AdminPage.tsx (ملف جديد)
 import { useTranslation } from 'react-i18next'
 import { useAdminData } from '../hooks/useAdminData'
 
@@ -8,7 +7,7 @@ export default function AdminPage() {
   const { users, reports, isLoading, error, toggleSuspend } = useAdminData()
 
   if (isLoading) return <p className="text-text-muted">{lang === 'ar' ? 'عم نحمّل...' : 'Loading...'}</p>
-  if (error) return <p className="text-flag">{error}</p> // 403 لو مش admin فعلياً — الباك اند هو الحارس الحقيقي
+  if (error) return <p className="text-flag">{error}</p>
 
   return (
     <div>

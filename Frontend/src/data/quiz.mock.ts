@@ -1,4 +1,3 @@
-// frontend/src/data/quiz.mock.ts (ملف جديد)
 export interface MockQuizQuestion {
   id: string
   textAr: string

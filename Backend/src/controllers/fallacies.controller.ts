@@ -1,4 +1,3 @@
-// backend/src/controllers/fallacies.controller.ts (استبدله كامل)
 import type { Request, Response } from "express";
 import { prisma } from "../config/prisma.js";
 import { AppError } from "../middleware/errorHandler.js";

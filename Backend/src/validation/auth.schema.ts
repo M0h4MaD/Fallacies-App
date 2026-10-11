@@ -1,4 +1,3 @@
-// backend/src/validation/auth.schema.ts (ملف جديد)
 import { z } from "zod";
 
 export const guestSchema = z.object({

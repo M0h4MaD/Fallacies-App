@@ -1,4 +1,3 @@
-// backend/src/services/explainer.ts (ملف جديد)
 import { callGemini } from './geminiCall.js'
 import { wrapUserText } from './promptSafety.js'
 

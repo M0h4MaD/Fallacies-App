@@ -1,4 +1,3 @@
-// backend/src/validation/quiz.schema.ts (ملف جديد)
 import { z } from 'zod'
 
 export const submitQuizSchema = z.object({

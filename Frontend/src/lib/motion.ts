@@ -1,5 +1,3 @@
-// frontend/src/lib/motion.ts (ملف جديد)
-// مصدر واحد للحركة بكل التطبيق — هدوء وفخامة، مش لعبة (قرارك بجلسة سابقة).
 import type { Transition, Variants } from 'framer-motion'
 
 export const pageVariants: Variants = {

@@ -1,4 +1,3 @@
-// backend/src/routes/fallacies.routes.ts (استبدله كامل — تأكيد الاستيراد الصح)
 import { Router } from 'express'
 import { asyncHandler } from '../middleware/asyncHandler.js'
 import { verifySupabaseAuth, requireAdmin } from '../middleware/auth.js'

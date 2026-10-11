@@ -1,4 +1,3 @@
-// backend/src/middleware/validate.ts (ملف جديد)
 import type { NextFunction, Request, Response } from 'express'
 import type { ZodSchema } from 'zod'
 import { AppError } from './errorHandler.js'

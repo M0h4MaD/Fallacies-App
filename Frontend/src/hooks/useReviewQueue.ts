@@ -1,4 +1,3 @@
-// frontend/src/hooks/useReviewQueue.ts (ملف جديد)
 import { useEffect, useState } from 'react'
 import { apiClient } from '../lib/apiClient'
 import type { Fallacy } from '../types'

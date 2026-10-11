@@ -1,6 +1,3 @@
-// frontend/src/components/home/FallacySpotter.tsx (ملف جديد)
-// Landing-page teaser: a taste of the real quiz loop before sign-up. Static example for now —
-// Phase 5 swaps this for a live Gemini-generated one via the same component shape.
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 

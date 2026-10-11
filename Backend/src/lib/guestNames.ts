@@ -1,4 +1,3 @@
-// backend/src/lib/guestNames.ts (استبدله كامل)
 const NAMES: Record<'ar' | 'en', { adjectives: string[]; nouns: string[] }> = {
   ar: { adjectives: ['سريع', 'ذكي', 'فضولي', 'يقظ', 'منطقي'], nouns: ['المفكر', 'الباحث', 'المراقب', 'الناقد', 'المحلّل'] },
   en: { adjectives: ['Quick', 'Sharp', 'Curious', 'Keen', 'Logical'], nouns: ['Thinker', 'Seeker', 'Observer', 'Critic', 'Analyst'] },

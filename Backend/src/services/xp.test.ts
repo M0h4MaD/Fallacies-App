@@ -1,4 +1,3 @@
-// backend/src/services/xp.test.ts (ملف جديد)
 import { describe, it, expect } from 'vitest'
 import { xpForAnswer, levelForXp, xpToNextLevel } from './xp.js'
 

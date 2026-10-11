@@ -3,7 +3,6 @@ import { ai, GEMINI_MODEL } from '../config/gemini.js';
 
 const router = Router();
 
-// Test Route: POST /api/v1/test-gemini
 router.post('/test-gemini', async (req, res) => {
   try {
     const response = await ai.models.generateContent({

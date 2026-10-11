@@ -1,4 +1,3 @@
-// backend/src/index.ts (استبدله كامل)
 import "dotenv/config";
 import { createApp } from "./app.js";
 import { connectDB } from "./config/prisma.js";

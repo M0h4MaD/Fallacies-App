@@ -1,4 +1,3 @@
-// backend/src/services/geminiQuota.ts (استبدله كامل)
 import { prisma } from '../config/prisma.js'
 import { AppError } from '../middleware/errorHandler.js'
 
@@ -12,6 +11,6 @@ export async function checkAndIncrementQuota(userId: string): Promise<void> {
   await prisma.dailyQuota.upsert({
     where: { userId_date: { userId, date } },
     create: { userId, date, callCount: 1 },
-    update: { callCount: { increment: 1 } }, // عملية واحدة ذرية بمستوى قاعدة البيانات، ما فيها سباق ولا P2002
+    update: { callCount: { increment: 1 } },
   })
 }

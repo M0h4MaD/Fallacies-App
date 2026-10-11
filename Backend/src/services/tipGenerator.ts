@@ -1,6 +1,3 @@
-// backend/src/services/tipGenerator.ts (ملف جديد)
-// pro_tip/mini_challenge/spot_it بس قابلين للتوليد — did_you_know/history تضل يدوية فقط، لأنها
-// محتوى واقعي (تاريخ، حقائق) وخطر الهلوسة فيه أعلى بكتير لو AI عم يولّده بتكرار بدون مراجعة.
 import { z } from "zod";
 import { prisma } from "../config/prisma.js";
 import { callGemini } from "./geminiCall.js";

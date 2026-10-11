@@ -1,4 +1,3 @@
-// frontend/src/components/layout/BottomNav.tsx (استبدله كامل)
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";

@@ -1,4 +1,3 @@
-// frontend/src/components/home/WhyItMatters.tsx (ملف جديد)
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { ShieldCheck, Scale, MessageCircle } from 'lucide-react'

@@ -1,4 +1,3 @@
-// backend/src/controllers/debater.controller.ts (استبدله كامل)
 import type { Response } from "express";
 import type { ExampleContext, Difficulty } from "@prisma/client";
 import { prisma } from "../config/prisma.js";

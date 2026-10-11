@@ -1,4 +1,3 @@
-// backend/src/scripts/seedFallacies.ts (استبدله كامل)
 import "dotenv/config";
 import { prisma } from "../config/prisma.js";
 import { fallaciesDraft } from "../data/fallacies.seed-data.js";

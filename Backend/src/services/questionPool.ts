@@ -1,6 +1,3 @@
-// backend/src/services/questionPool.ts (ملف جديد)
-// Serves a pooled question the user hasn't seen recently; kicks off an async refill once a pool
-// runs low. Never generates on the request path itself (spec 4-D-4).
 import { prisma } from "../config/prisma.js";
 import { generateQuestionBatch } from "./questionGenerator.js";
 import { AppError } from "../middleware/errorHandler.js";
@@ -38,7 +35,6 @@ export async function getPooledQuestion(
   if (candidates.length === 0)
     candidates = await prisma.generatedQuestion.findMany({ where: baseWhere });
   if (candidates.length === 0 && contextType) {
-    // ما في أسئلة بهالموضوع تحديداً لهالمغالطة لسا — تراجع لأي موضوع بدل خطأ فوري
     candidates = await prisma.generatedQuestion.findMany({
       where: {
         fallacyId,

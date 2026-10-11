@@ -1,4 +1,3 @@
-// backend/src/data/fallacies.seed-data.ts (استبدله كامل)
 import type {
   FallacyCategory,
   FallacySubCategory,

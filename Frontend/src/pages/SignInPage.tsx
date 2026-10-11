@@ -1,4 +1,3 @@
-// frontend/src/pages/SignInPage.tsx (استبدله كامل — الفرق الوحيد: التفاف الفورم كلها ببطاقة مرتفعة، كانت عايمة عالخلفية مباشرة بدون أي إطار)
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";

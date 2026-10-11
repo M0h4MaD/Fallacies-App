@@ -1,4 +1,3 @@
-// backend/src/scripts/backfillExplanations.ts (ملف جديد)
 import "dotenv/config";
 import { z } from "zod";
 import { prisma } from "../config/prisma.js";

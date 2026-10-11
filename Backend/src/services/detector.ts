@@ -1,4 +1,3 @@
-// backend/src/services/detector.ts (ملف جديد)
 import { z } from 'zod'
 import { callGemini } from './geminiCall.js'
 import { wrapUserText } from './promptSafety.js'

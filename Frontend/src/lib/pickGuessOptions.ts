@@ -1,4 +1,3 @@
-// frontend/src/lib/pickGuessOptions.ts (ملف جديد — يستخدم بالمناظرة وصحّح معاً)
 export function pickGuessOptions<T extends { slug: string }>(pool: T[], correctSlug: string, count = 6): T[] {
   const correct = pool.find((f) => f.slug === correctSlug)
   const distractors = pool.filter((f) => f.slug !== correctSlug)

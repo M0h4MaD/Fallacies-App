@@ -1,4 +1,3 @@
-// frontend/src/components/layout/Footer.tsx (استبدله كامل)
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -45,7 +44,6 @@ export default function Footer() {
   }
 
   return (
-    // pb هون هي مساحة الـ BottomNav الثابت على الموبايل، مش على المحتوى.
     <footer className="border-t border-border bg-surface pb-[calc(5rem_+_env(safe-area-inset-bottom))] sm:pb-0">
       <div className="mx-auto max-w-5xl px-6 py-10">
         <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-[1.4fr_1fr_1fr] sm:gap-10">

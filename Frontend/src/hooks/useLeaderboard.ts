@@ -1,4 +1,3 @@
-// frontend/src/hooks/useLeaderboard.ts (ملف جديد)
 import { useEffect, useState } from 'react'
 import { apiClient } from '../lib/apiClient'
 

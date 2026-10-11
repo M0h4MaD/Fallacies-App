@@ -1,4 +1,3 @@
-// backend/src/validation/explainer.schema.ts (ملف جديد)
 import { z } from 'zod'
 export const explainerSchema = z.object({
   fallacySlug: z.string().min(1),

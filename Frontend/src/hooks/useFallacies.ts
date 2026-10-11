@@ -1,4 +1,3 @@
-// frontend/src/hooks/useFallacies.ts (استبدله كامل)
 import { useEffect, useState } from 'react'
 import { apiClient } from '../lib/apiClient'
 import type { Fallacy } from '../types'

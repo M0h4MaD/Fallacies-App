@@ -1,4 +1,3 @@
-// frontend/src/hooks/useAdminData.ts (ملف جديد)
 import { useEffect, useState } from 'react'
 import { apiClient } from '../lib/apiClient'
 

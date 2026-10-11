@@ -1,4 +1,3 @@
-// frontend/src/pages/AboutPage.tsx (استبدله كامل — دمج About + Privacy بصفحة وحدة)
 import { useTranslation } from 'react-i18next'
 
 export default function AboutPage() {

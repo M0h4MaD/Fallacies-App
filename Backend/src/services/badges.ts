@@ -1,5 +1,3 @@
-// backend/src/services/badges.ts (ملف جديد)
-// Declarative, rule-based, server-side (spec 4-A). New badge = new rule here, nothing else changes.
 interface BadgeContext { totalCorrectAnswers: number; streakCurrent: number; level: number }
 interface BadgeRule { id: string; isEarned: (ctx: BadgeContext) => boolean }
 

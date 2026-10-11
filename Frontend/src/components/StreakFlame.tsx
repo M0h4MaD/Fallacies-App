@@ -1,4 +1,3 @@
-// frontend/src/components/StreakFlame.tsx (استبدله كامل)
 import { AnimatePresence, motion } from "framer-motion";
 import { Flame } from "lucide-react";
 

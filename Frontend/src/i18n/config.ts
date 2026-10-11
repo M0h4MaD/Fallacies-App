@@ -1,6 +1,3 @@
-// frontend/src/i18n/config.ts 
-// Language-driven side effects (dir, lang, title, persistence) live HERE via the
-// languageChanged event — not in a component — so they fire no matter what triggers the change.
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import ar from './ar'
@@ -12,7 +9,6 @@ const STORAGE_KEY = 'lang'
 function detectInitialLanguage(): AppLanguage {
   const stored = localStorage.getItem(STORAGE_KEY)
   if (stored === 'ar' || stored === 'en') return stored
-  // Browser-language fallback — first visit only, before any explicit choice exists.
   return navigator.language.toLowerCase().startsWith('en') ? 'en' : 'ar'
 }
 

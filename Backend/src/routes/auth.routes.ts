@@ -1,4 +1,3 @@
-// backend/src/routes/auth.routes.ts (ملف جديد)
 import { Router } from 'express'
 import rateLimit from 'express-rate-limit'
 import { asyncHandler } from '../middleware/asyncHandler.js'
@@ -9,7 +8,7 @@ import { identifyUser } from '../middleware/identify.js'
 import { verifySupabaseAuth } from '../middleware/auth.js'
 
 const router = Router()
-router.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, standardHeaders: true, legacyHeaders: false })) // spec 5: stricter limit on auth
+router.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, standardHeaders: true, legacyHeaders: false }))
 
 router.post('/guest', validateBody(guestSchema), asyncHandler(continueAsGuest))
 router.post('/register', verifySupabaseAuth, validateBody(registerSchema), asyncHandler(registerOrMerge))

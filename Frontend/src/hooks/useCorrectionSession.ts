@@ -1,4 +1,3 @@
-// frontend/src/hooks/useCorrectionSession.ts (استبدله كامل)
 import { useEffect, useState } from 'react'
 import { apiClient } from '../lib/apiClient'
 import { useAuthStore, applyQuizResult } from '../store/authStore'
@@ -64,7 +63,6 @@ export function useCorrectionSession(targetPool: Fallacy[], optionsPool: Fallacy
       const { data } = await apiClient.post<EvaluatorResult>('/api/evaluator', { fallacySlug: targetFallacy.slug, originalText: lang === 'ar' ? question.text.ar : question.text.en, identifiedFallacySlug: guessedSlug, rewrittenText: rewriteText.trim(), lang })
       setResult(data)
 
-      // نظام الخبرة نفسو المستخدم بالكويز العادي — mode:'correction' بيفعّل مضاعف 1.5× أصلاً بالباك اند.
       const wasCorrect = data.identifiedCorrectFallacy && data.rewriteRemovesFallacy
       const xpRes = await apiClient.post<XpResult>('/api/quiz/submit',
         { mode: 'correction', timeSpentSec: Math.round((Date.now() - startTime) / 1000), answers: [{ fallacyId: targetFallacy.id, difficultyTier: difficulty, wasCorrect, hintUsed: false }] },

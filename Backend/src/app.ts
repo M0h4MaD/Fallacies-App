@@ -1,4 +1,3 @@
-// backend/src/app.ts (استبدله كامل)
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";

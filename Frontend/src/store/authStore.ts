@@ -1,4 +1,3 @@
-// frontend/src/store/authStore.ts (استبدله كامل)
 import { create } from 'zustand'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../config/supabase'

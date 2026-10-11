@@ -1,4 +1,3 @@
-// backend/src/controllers/tips.controller.ts (ملف جديد)
 import type { Request, Response } from "express";
 import { prisma } from "../config/prisma.js";
 import { asOptionalString } from "../lib/params.js";
@@ -21,7 +20,7 @@ export async function getRandomTip(req: Request, res: Response) {
   if (count === 0) {
     finalWhere = {};
     count = await prisma.tip.count();
-  } // fallback بدل شاشة فاضية
+  }
 
   if (count === 0) {
     res.json(null);

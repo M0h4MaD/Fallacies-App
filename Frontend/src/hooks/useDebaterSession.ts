@@ -1,4 +1,3 @@
-// frontend/src/hooks/useDebaterSession.ts (استبدله كامل)
 import { useMemo, useState } from "react";
 import { apiClient } from "../lib/apiClient";
 import { pickGuessOptions } from "../lib/pickGuessOptions";

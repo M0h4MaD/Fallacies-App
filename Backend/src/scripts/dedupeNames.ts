@@ -1,4 +1,3 @@
-// backend/src/scripts/dedupeNames.ts (ملف جديد) — npx tsx src/scripts/dedupeNames.ts
 import 'dotenv/config'
 import { prisma } from '../config/prisma.js'
 

@@ -1,4 +1,3 @@
-// frontend/src/pages/LeaderboardPage.tsx (استبدله كامل)
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";

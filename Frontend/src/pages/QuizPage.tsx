@@ -1,4 +1,3 @@
-// frontend/src/pages/QuizPage.tsx (استبدله كامل — موحّد: إعداد يختار موضوع + مغالطات محدّدة، وrunner واحد لكل الحالات)
 import { useMemo, useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";

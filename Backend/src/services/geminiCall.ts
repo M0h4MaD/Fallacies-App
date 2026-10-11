@@ -1,6 +1,3 @@
-// backend/src/services/geminiCall.ts (ملف جديد)
-// Every Gemini call goes through here: quota-checked, retried with exponential backoff on rate
-// limits. Per-function caching (e.g. the question pool) is layered on top by each caller.
 import { ai, GEMINI_MODEL, GEMINI_SAFETY_SETTINGS } from "../config/gemini.js";
 import { checkAndIncrementQuota } from "./geminiQuota.js";
 import { AppError } from "../middleware/errorHandler.js";
@@ -11,7 +8,7 @@ interface CallGeminiOptions {
   prompt: string;
   responseSchema?: object;
   maxRetries?: number;
-  timeoutMs?: number; // مهلة زمنية مخصصة للملف (افتراضياً 30 ثانية)
+  timeoutMs?: number;
 }
 
 export async function callGemini({
@@ -46,7 +43,7 @@ export async function callGemini({
       const isRateLimit =
         err instanceof Error && /429|rate.?limit/i.test(err.message);
       if (!isRateLimit || attempt === maxRetries) throw err;
-      await new Promise((r) => setTimeout(r, 2 ** attempt * 1000)); // 1s, 2s, 4s...
+      await new Promise((r) => setTimeout(r, 2 ** attempt * 1000));
     }
   }
   throw new AppError("Gemini call failed after retries", 502);

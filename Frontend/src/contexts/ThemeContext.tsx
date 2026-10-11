@@ -1,5 +1,3 @@
-// frontend/src/contexts/ThemeContext.tsx (ملف جديد)
-// Keeps theme plumbing out of App.tsx and every future page — components just call useTheme().
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 
 type Theme = 'light' | 'dark'
@@ -28,6 +26,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
 export function useTheme(): ThemeContextValue {
   const ctx = useContext(ThemeContext)
-  if (!ctx) throw new Error('useTheme must be used within a ThemeProvider') // fail fast, not silently
+  if (!ctx) throw new Error('useTheme must be used within a ThemeProvider')
   return ctx
 }

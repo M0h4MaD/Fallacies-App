@@ -1,4 +1,3 @@
-// frontend/src/components/ExampleDisclaimer.tsx (ملف جديد)
 import { useTranslation } from 'react-i18next'
 
 export default function ExampleDisclaimer({ contextType }: { contextType?: string }) {

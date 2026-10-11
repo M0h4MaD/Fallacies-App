@@ -1,4 +1,3 @@
-// frontend/src/pages/AiChatPage.tsx (استبدله كامل)
 import { useEffect, useState, type FormEvent } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";

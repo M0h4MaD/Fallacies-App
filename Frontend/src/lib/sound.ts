@@ -1,4 +1,3 @@
-// frontend/src/lib/sound.ts (ملف جديد)
 const STORAGE_KEY = 'soundEnabled'
 let ctx: AudioContext | null = null
 

@@ -1,4 +1,3 @@
-// backend/src/controllers/auth.controller.ts (استبدله كامل)
 import type { Response } from "express";
 import { prisma } from "../config/prisma.js";
 import type { AuthedRequest } from "../middleware/auth.js";

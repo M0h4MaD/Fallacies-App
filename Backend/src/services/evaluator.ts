@@ -1,6 +1,3 @@
-// backend/src/services/evaluator.ts (ملف جديد)
-// identifiedCorrectFallacy مش من Gemini — هاي محسوبة عندنا بالسيرفر بمقارنة مباشرة، ما في داعي
-// نسأل الموديل يحكم على شي إحنا عارفينه أكيد أصلاً.
 import { z } from 'zod'
 import { callGemini } from './geminiCall.js'
 import { wrapUserText } from './promptSafety.js'

@@ -1,4 +1,3 @@
-// frontend/src/pages/HomePage.tsx (استبدله كامل — عنوان الهيرو أكبر وأثقل فعلياً لأول مرة، تباين حقيقي مع باقي العناوين)
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";

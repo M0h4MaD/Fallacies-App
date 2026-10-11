@@ -1,4 +1,3 @@
-// frontend/src/components/home/FallacyPrimer.tsx (ملف جديد)
 import { useTranslation } from 'react-i18next'
 
 export default function FallacyPrimer() {

@@ -1,4 +1,3 @@
-// backend/src/services/questionGenerator.ts (الملف كامل بالحالة الحالية)
 import { z } from "zod";
 import { prisma } from "../config/prisma.js";
 import { callGemini } from "./geminiCall.js";
@@ -88,8 +87,6 @@ export async function generateQuestionBatch(
       mode,
       forceContext,
     );
-    // Background refills aren't tied to one end-user — billed against a shared system quota
-    // bucket so total generation cost stays bounded regardless of traffic pattern.
     const raw = await callGemini({ userId: null, prompt, responseSchema });
     const parsed = geminiOutputSchema.parse(JSON.parse(raw));
     created.push(
@@ -97,7 +94,7 @@ export async function generateQuestionBatch(
         data: { fallacyId, difficultyTier, mode, ...parsed },
       }),
     );
-    if (i < count - 1) await new Promise((r) => setTimeout(r, 6500)); // نضل تحت سقف 10 طلبات/دقيقة على الفري تير
+    if (i < count - 1) await new Promise((r) => setTimeout(r, 6500));
   }
   return created;
 }

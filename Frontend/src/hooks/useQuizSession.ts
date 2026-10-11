@@ -1,4 +1,3 @@
-// frontend/src/hooks/useQuizSession.ts (استبدله كامل — موحّد: مغالطة وحدة أو عدة، مع كل ميزات الفاز الغنية)
 import { useEffect, useState } from "react";
 import { apiClient } from "../lib/apiClient";
 import { useAuthStore, applyQuizResult } from "../store/authStore";
@@ -74,7 +73,6 @@ export function useQuizSession(pool: Fallacy[], contexts: string[]) {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [round, isFinished, difficulty]);
 
   useEffect(() => {

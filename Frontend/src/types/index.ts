@@ -1,6 +1,3 @@
-// frontend/src/types/index.ts
-// Domain types mirroring the backend Mongoose schemas (spec Section 4-A/4-B/4-C).
-// Single source of truth on the frontend — keep in sync with the backend models.
 
 export type FallacyCategory = 'formal' | 'informal'
 export type FallacySubCategory = 'relevance' | 'ambiguity' | 'presumption' | 'weak_induction'

@@ -1,4 +1,3 @@
-// backend/src/services/streak.test.ts (ملف جديد)
 import { describe, it, expect } from 'vitest'
 import { nextStreak } from './streak.js'
 

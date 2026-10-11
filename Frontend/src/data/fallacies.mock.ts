@@ -1,6 +1,3 @@
-// frontend/src/data/fallacies.mock.ts (ملف جديد)
-// Placeholder data source until the real API is wired in (Phase 6). Swapping later means
-// changing useFallacies() only — no page component needs to change.
 import type { Fallacy } from '../types'
 
 export const mockFallacies: Fallacy[] = [

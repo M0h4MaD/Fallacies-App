@@ -1,4 +1,3 @@
-// backend/src/routes/admin.routes.ts (ملف جديد)
 import { Router } from 'express'
 import { z } from 'zod'
 import { asyncHandler } from '../middleware/asyncHandler.js'

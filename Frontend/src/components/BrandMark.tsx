@@ -1,4 +1,3 @@
-// frontend/src/components/BrandMark.tsx (ملف جديد)
 export default function BrandMark({ size = 48, className = '' }: { size?: number; className?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" className={className}>

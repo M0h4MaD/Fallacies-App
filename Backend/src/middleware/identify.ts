@@ -1,4 +1,3 @@
-// backend/src/middleware/identify.ts (استبدله كامل)
 import type { NextFunction, Request, Response } from 'express'
 import { verifySupabaseToken } from '../config/supabaseAuth.js'
 import { prisma } from '../config/prisma.js'

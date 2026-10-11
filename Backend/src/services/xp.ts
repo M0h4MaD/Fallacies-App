@@ -1,4 +1,3 @@
-// backend/src/services/xp.ts (استبدله كامل)
 import type { Difficulty, QuizMode } from "@prisma/client";
 
 const XP_PER_DIFFICULTY: Record<Difficulty, number> = {
@@ -29,7 +28,6 @@ interface LevelInfo {
   xpToNextLevel: number;
 }
 
-// مصدر واحد لمنحنى المستويات — levelForXp وxpToNextLevel تحت بيرجعوا لهون، ما فيهن يختلفوا عن بعض بالغلط.
 function computeLevel(totalXp: number): LevelInfo {
   let level = 1,
     threshold = 100,

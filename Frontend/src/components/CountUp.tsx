@@ -1,4 +1,3 @@
-// frontend/src/components/CountUp.tsx (ملف جديد)
 import { useEffect, useState } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 

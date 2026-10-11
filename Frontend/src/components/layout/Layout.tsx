@@ -1,4 +1,3 @@
-// frontend/src/components/layout/Layout.tsx (استبدله كامل)
 import { Outlet, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Header from './Header'

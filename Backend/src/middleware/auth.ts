@@ -1,4 +1,3 @@
-// backend/src/middleware/auth.ts (استبدله كامل)
 import type { NextFunction, Request, Response } from "express";
 import { verifySupabaseToken } from "../config/supabaseAuth.js";
 import { prisma } from "../config/prisma.js";
@@ -30,7 +29,6 @@ export async function verifySupabaseAuth(
   }
 }
 
-// يشتغل صح بغض النظر شو سبقه — identifyUser (currentUser) أو verifySupabaseAuth (supabaseUser بس).
 export async function requireAdmin(
   req: AuthedRequest & IdentifiedRequest,
   _res: Response,

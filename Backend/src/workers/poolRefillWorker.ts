@@ -1,4 +1,3 @@
-// backend/src/workers/poolRefillWorker.ts (استبدله كامل)
 import cron from "node-cron";
 import { prisma } from "../config/prisma.js";
 import { generateQuestionBatch } from "../services/questionGenerator.js";

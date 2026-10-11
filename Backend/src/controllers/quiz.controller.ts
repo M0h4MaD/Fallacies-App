@@ -1,4 +1,3 @@
-// backend/src/controllers/quiz.controller.ts (استبدله كامل)
 import type { Response } from "express";
 import type { Difficulty, QuizMode } from "@prisma/client";
 import { prisma } from "../config/prisma.js";

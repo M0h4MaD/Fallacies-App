@@ -1,4 +1,3 @@
-// frontend/src/lib/badgeLabels.ts (ملف جديد — مصدر وحيد، ProfilePage.tsx كانت عندها نسخة محلية، بدّلها لاستيراد من هون)
 export const BADGE_LABELS: Record<string, { ar: string; en: string }> = {
   'first-correct': { ar: 'أول إجابة صح', en: 'First Correct Answer' },
   'streak-7': { ar: '7 أيام متتالية', en: '7-Day Streak' },
